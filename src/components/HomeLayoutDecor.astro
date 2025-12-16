@@ -1,0 +1,84 @@
+---
+import { Picture } from 'astro:assets';
+
+import Battery from '@/assets/layout/Battery.png';
+import Circuit from '@/assets/layout/Circuit.png';
+import Cpu from '@/assets/layout/CPU.png';
+import Crab from '@/assets/layout/Crab.png';
+import Diode from '@/assets/layout/Diode.png';
+
+const widths = [96, 128, 160, 192, 256, 320];
+const sizes = '(max-width: 640px) 96px, (max-width: 1024px) 128px, 192px';
+const formats = ['avif', 'webp'];
+---
+
+<!-- Decorative only: hidden from assistive tech. -->
+<div class="home-layout-decor" aria-hidden="true">
+  <!-- “Random once in code” placement (static mapping) -->
+  <div class="home-layout-decor__slot home-layout-decor__slot--topRight" style="--size: 160px;">
+    <Picture
+      src={Battery}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+
+  <div class="home-layout-decor__slot home-layout-decor__slot--midLeft" style="--size: 190px;">
+    <Picture
+      src={Cpu}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+
+  <div class="home-layout-decor__slot home-layout-decor__slot--midRight" style="--size: 180px;">
+    <Picture
+      src={Diode}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+
+  <div class="home-layout-decor__slot home-layout-decor__slot--bottomLeft" style="--size: 200px;">
+    <Picture
+      src={Circuit}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+
+  <div class="home-layout-decor__slot home-layout-decor__slot--bottomRight" style="--size: 150px;">
+    <Picture
+      src={Crab}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+</div>
+
+

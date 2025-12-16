@@ -25,6 +25,14 @@ There's nothing special about `src/components/`, but that's where we like to put
 
 Any static assets, like images, can be placed in the `public/` directory.
 
+### Static images for the main layout
+
+Store unprocessed layout images in `public/images/layout/` and reference them by URL path:
+
+- Example: `public/images/layout/logo.png` → use `src="/images/layout/logo.png"` in `BaseLayout.astro`.
+
+If you want Astro to transform/optimize images, keep them in `src/` and import them (see Astro “Images” guide).
+
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:

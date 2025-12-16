@@ -2,17 +2,11 @@
 import LessonCard from '@/components/LessonCard.tsx';
 import HomeLayoutDecor from '@/components/HomeLayoutDecor.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { getAvailableLanguages } from '@/utils/languages';
 import { getCollection, getEntry, render } from 'astro:content';
 
-export async function getStaticPaths() {
-  const languages = await getAvailableLanguages();
-  return languages.map((lang) => ({ params: { lang } }));
-}
+// Apple-style default: show English content at `/` (no redirect, no auto-detection).
+const lang = 'en';
 
-const { lang } = Astro.params;
-
-// Load home page content from MDX (now at content/en/home.mdx instead of content/pages/en/home.mdx)
 const homeContent = await getEntry('pages', `${lang}/home`);
 if (!homeContent) {
   throw new Error(`Home page content not found for language: ${lang}`);
@@ -21,15 +15,10 @@ if (!homeContent) {
 const { Content } = await render(homeContent);
 
 const allLessons = await getCollection('lessons');
-// Filter lessons by language (lessons are now at content/en/lessons/*.mdx)
 const filteredLessons = allLessons.filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`));
 const sortedLessons = filteredLessons.sort((a, b) => a.data.order - b.data.order);
 
-const lessonLabelByLang: Record<string, string> = {
-  en: 'Lesson',
-  es: 'Lección',
-};
-const lessonLabel = lessonLabelByLang[lang] ?? 'Lesson';
+const lessonLabel = 'Lesson';
 ---
 
 <BaseLayout
@@ -83,3 +72,4 @@ const lessonLabel = lessonLabelByLang[lang] ?? 'Lesson';
     </div>
   </div>
 </BaseLayout>
+

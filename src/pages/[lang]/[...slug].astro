@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAvailableLanguages } from '@/utils/languages';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  const languages = await getAvailableLanguages();
+
+  return languages.flatMap((lang) => {
+    // Lessons are now at content/en/lessons/*.mdx
+    const langLessons = lessons.filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`));
+    return langLessons.map((lesson) => {
+      // Extract slug from id: "en/lessons/getting-started.mdx" -> "getting-started"
+      const defaultSlug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
+      const slug = lesson.data.url || defaultSlug;
+      return {
+        params: { lang, slug },
+        props: { lesson },
+      };
+    });
+  });
+}
+
+const { lang } = Astro.params;
+const { lesson } = Astro.props;
+const { Content } = await render(lesson);
+---
+
+<BaseLayout
+  title={lesson.data.title}
+  lang={lang}
+  description={lesson.data.description}
+  ogTitle={lesson.data.ogTitle}
+  ogDescription={lesson.data.ogDescription}
+  ogImage={lesson.data.ogImage}
+  ogType={lesson.data.ogType}
+  twitterCard={lesson.data.twitterCard}
+  canonicalUrl={lesson.data.canonicalUrl}
+>
+  <article>
+    <Content />
+  </article>
+</BaseLayout>

@@ -1,0 +1,36 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAvailableLanguages } from '@/utils/languages';
+import { getEntry, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const languages = await getAvailableLanguages();
+  return languages.map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+
+// Load about page content from MDX
+const aboutContent = await getEntry('pages', `${lang}/about`);
+if (!aboutContent) {
+  throw new Error(`About page content not found for language: ${lang}`);
+}
+
+const { Content } = await render(aboutContent);
+---
+
+<BaseLayout
+  lang={lang}
+  title={aboutContent.data.title}
+  description={aboutContent.data.description}
+  ogTitle={aboutContent.data.ogTitle}
+  ogDescription={aboutContent.data.ogDescription}
+  ogImage={aboutContent.data.ogImage}
+  ogType={aboutContent.data.ogType}
+  twitterCard={aboutContent.data.twitterCard}
+  canonicalUrl={aboutContent.data.canonicalUrl}
+>
+  <article>
+    <Content />
+  </article>
+</BaseLayout>

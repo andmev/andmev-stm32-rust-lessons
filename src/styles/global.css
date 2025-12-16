@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-serif: 'Instrument Serif', serif;
+  --font-sans: 'PT Sans', sans-serif;
+  --font-sans-narrow: 'PT Sans Narrow', sans-serif;
+  --font-mono: 'PT Mono', monospace;
+
+  /* Figma-inspired design tokens (light) */
+  --color-background: #fbfbfb;
+  --color-surface: #f4f4f4;
+  --color-foreground: #0a0a0a;
+  --color-muted: #777777;
+
+  --radius-card: 3.25rem; /* ~52px */
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Figma-inspired design tokens (dark) */
+    --color-background: #0b0b0d;
+    --color-surface: #151519;
+    --color-foreground: #f3f3f3;
+    --color-muted: #a0a0a0;
+  }
+}
+
+@layer base {
+  html {
+    font-kerning: normal;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'clig' 1, 'calt' 1;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.01em;
+  }
+
+  a {
+    @apply text-foreground;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-foreground) 18%, transparent);
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  /* Home hero typography (MDX headings) */
+  .home-hero :is(h1, h2, p) {
+    margin: 0;
+  }
+
+  .home-hero h2 {
+    @apply font-serif text-center uppercase;
+    letter-spacing: 0.16em;
+    font-size: clamp(1.125rem, 1.25vw + 0.65rem, 2.5rem);
+    line-height: 1.15;
+  }
+
+  .home-hero h1 {
+    @apply font-serif text-center;
+    font-size: clamp(3rem, 5.2vw + 1rem, 6rem);
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+}

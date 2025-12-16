@@ -1,0 +1,128 @@
+---
+import LanguagePickerIsland from '@/components/LanguagePickerIsland';
+import { getAvailableLanguages, LANGUAGE_NAMES } from '@/utils/languages';
+import { getCollection } from 'astro:content';
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+  lang: string;
+  title: string;
+  description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  twitterCard?: 'summary' | 'summary_large_image';
+  canonicalUrl?: string;
+}
+
+const {
+  lang,
+  title,
+  description,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogType = 'website',
+  twitterCard = 'summary_large_image',
+  canonicalUrl,
+} = Astro.props;
+
+const availableLanguages = await getAvailableLanguages();
+
+const allPages = await getCollection('pages');
+const pages = allPages
+  .filter((page) => page.id.startsWith(`${lang}/`))
+  .sort((a, b) => a.data.order - b.data.order);
+
+// Safe canonical URL generation
+const site = Astro.site ? Astro.site.href : Astro.url.origin;
+const canonical = canonicalUrl || new URL(Astro.url.pathname, site).href;
+const socialImage = ogImage || new URL('/favicon.svg', site).href;
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=PT+Sans+Narrow:wght@400;700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- SEO & Open Graph -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:title" content={ogTitle || title} />
+    <meta property="og:description" content={ogDescription || description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={lang} />
+
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={ogTitle || title} />
+    <meta name="twitter:description" content={ogDescription || description} />
+    <meta name="twitter:image" content={socialImage} />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+
+    <footer class="mt-16 border-t border-foreground/10">
+      <div class="mx-auto w-full max-w-[68rem] px-4 py-10 sm:px-6">
+        <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
+            {
+              pages.map((page) => {
+                const href = `/${lang}${page.data.url ? '/' + page.data.url : '/'}`;
+                const isActive =
+                  Astro.url.pathname === href ||
+                  Astro.url.pathname === href.replace(/\/$/, '') ||
+                  Astro.url.pathname.replace(/\/$/, '') === href.replace(/\/$/, '');
+
+                return isActive ? (
+                  <span class="text-foreground">{page.data.name}</span>
+                ) : (
+                  <a class="transition hover:text-foreground" href={href}>
+                    {page.data.name}
+                  </a>
+                );
+              })
+            }
+          </nav>
+
+          <div class="self-start sm:self-auto">
+            <LanguagePickerIsland
+              client:idle
+              transition:persist
+              currentLang={lang}
+              availableLanguages={availableLanguages}
+              languageNames={LANGUAGE_NAMES}
+              currentPath={Astro.url.pathname}
+            />
+          </div>
+        </div>
+
+        <p class="mt-8 text-sm text-muted">
+          &copy; {new Date().getFullYear()} STM32 Rust Lessons
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+</style>

@@ -96,18 +96,22 @@
   .home-layout-content {
     position: relative;
     z-index: 1;
+    transform: translate3d(0, var(--contentParallaxY, 0px), 0);
   }
 
   .home-layout-decor {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    /* Over the content (but non-interactive) */
+    z-index: 10;
     pointer-events: none;
   }
 
   .home-layout-decor__slot {
     position: absolute;
-    width: var(--size, 160px);
+    width: clamp(72px, 10.5vw, var(--w, 160px));
+    transform: translate3d(0, var(--parallaxY, 0px), 0) rotate(var(--rot, 0deg));
+    will-change: transform;
   }
 
   .home-layout-decor__picture,
@@ -122,35 +126,84 @@
     transform: translateZ(0);
   }
 
-  /* “Random once in code” positions (Figma-inspired) */
+  /* Positions based on Figma node 1:2 bounding boxes (flexible, responsive) */
   .home-layout-decor__slot--topRight {
-    top: -18px;
-    right: -8px;
-    transform: rotate(8deg);
+    top: clamp(12px, 2.6vw, 28px);
+    right: clamp(-22px, -1.4vw, -8px);
   }
 
   .home-layout-decor__slot--midLeft {
-    top: 230px;
-    left: -28px;
-    transform: rotate(-10deg);
+    /* Align near first card row */
+    top: clamp(520px, 38vw, 700px);
+    left: clamp(-42px, -3.4vw, -26px);
   }
 
   .home-layout-decor__slot--midRight {
-    top: 520px;
-    right: -34px;
-    transform: rotate(12deg);
+    top: clamp(690px, 48vw, 875px);
+    right: clamp(-42px, -3.2vw, -32px);
   }
 
   .home-layout-decor__slot--bottomLeft {
-    bottom: 50px;
-    left: -46px;
-    transform: rotate(-8deg);
+    bottom: clamp(90px, 9vw, 140px);
+    left: clamp(-44px, -3.2vw, -30px);
   }
 
   .home-layout-decor__slot--bottomRight {
-    bottom: -10px;
-    right: 4px;
-    transform: rotate(14deg);
+    bottom: clamp(-10px, -0.6vw, 0px);
+    right: clamp(0px, 0.6vw, 8px);
+  }
+
+  /* Pixel-match layout for the Figma 1440px frame (centered on viewport). */
+  @media (min-width: 1280px) {
+    .home-layout-root {
+      /* Small alignment tweak: our hero starts slightly lower due to padding. */
+      --figmaYOffset: -16px;
+    }
+
+    .home-layout-decor__slot {
+      /* Lock sizes closer to Figma at desktop */
+      width: var(--w, 160px);
+    }
+
+    /* Figma nodes (x/y/size): topRight x=1182 y=181.77 w=161.61 */
+    .home-layout-decor__slot--topRight {
+      top: calc(var(--figmaYOffset, 0px) + 181.8px);
+      left: calc(50% - 720px + 1182px);
+      right: auto;
+      bottom: auto;
+    }
+
+    /* midLeft (CPU): x=84 y=678.97 w=193.79 */
+    .home-layout-decor__slot--midLeft {
+      top: calc(var(--figmaYOffset, 0px) + 679px);
+      left: calc(50% - 720px + 84px);
+      right: auto;
+      bottom: auto;
+    }
+
+    /* midRight (double battery group): Group x=1171 y=874 w=222.74 */
+    .home-layout-decor__slot--midRight {
+      top: calc(var(--figmaYOffset, 0px) + 874px);
+      left: calc(50% - 720px + 1171px);
+      right: auto;
+      bottom: auto;
+    }
+
+    /* bottomLeft (circuit): x=97 y=1495.78 w=155.34 */
+    .home-layout-decor__slot--bottomLeft {
+      top: calc(var(--figmaYOffset, 0px) + 1496px);
+      left: calc(50% - 720px + 97px);
+      right: auto;
+      bottom: auto;
+    }
+
+    /* bottomRight (crab): x=1298 size=105 — pinned to bottom of the page section */
+    .home-layout-decor__slot--bottomRight {
+      top: auto;
+      left: calc(50% - 720px + 1298px);
+      right: auto;
+      bottom: -10px;
+    }
   }
 
   /* Reduce clutter on small screens */
@@ -164,18 +217,21 @@
     .home-layout-decor__slot--topRight {
       right: -14px;
       top: -12px;
-      width: var(--size, 120px);
+      width: clamp(92px, 24vw, 120px);
     }
 
     .home-layout-decor__slot--bottomLeft {
       left: -30px;
       bottom: 120px;
-      width: var(--size, 140px);
+      width: clamp(120px, 30vw, 150px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .home-layout-decor__slot {
+      transform: rotate(var(--rot, 0deg));
+    }
+    .home-layout-content {
       transform: none;
     }
   }

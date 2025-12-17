@@ -14,34 +14,13 @@ const formats = ['avif', 'webp'];
 
 <!-- Decorative only: hidden from assistive tech. -->
 <div class="home-layout-decor" aria-hidden="true">
-  <!-- “Random once in code” placement (static mapping) -->
-  <div class="home-layout-decor__slot home-layout-decor__slot--topRight" style="--size: 160px;">
-    <Picture
-      src={Battery}
-      alt=""
-      formats={formats}
-      widths={widths}
-      sizes={sizes}
-      loading="lazy"
-      decoding="async"
-      pictureAttributes={{ class: 'home-layout-decor__picture' }}
-    />
-  </div>
-
-  <div class="home-layout-decor__slot home-layout-decor__slot--midLeft" style="--size: 190px;">
-    <Picture
-      src={Cpu}
-      alt=""
-      formats={formats}
-      widths={widths}
-      sizes={sizes}
-      loading="lazy"
-      decoding="async"
-      pictureAttributes={{ class: 'home-layout-decor__picture' }}
-    />
-  </div>
-
-  <div class="home-layout-decor__slot home-layout-decor__slot--midRight" style="--size: 180px;">
+  <!-- Layout matches Figma “Home” frame (node 1:2) using a fixed mapping -->
+  <div
+    class="home-layout-decor__slot home-layout-decor__slot--topRight"
+    style="--w: 162px; --rot: 10deg;"
+    data-parallax
+    data-speed="0.18"
+  >
     <Picture
       src={Diode}
       alt=""
@@ -54,7 +33,50 @@ const formats = ['avif', 'webp'];
     />
   </div>
 
-  <div class="home-layout-decor__slot home-layout-decor__slot--bottomLeft" style="--size: 200px;">
+  <div
+    class="home-layout-decor__slot home-layout-decor__slot--midLeft"
+    style="--w: 194px; --rot: -12deg;"
+    data-parallax
+    data-speed="0.12"
+  >
+    <Picture
+      src={Cpu}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+
+  <!-- Figma has two stacked “battery” assets on the right. We mimic with two layers. -->
+  <div
+    class="home-layout-decor__slot home-layout-decor__slot--midRight"
+    style="--w: 223px; --rot: 14deg;"
+    data-parallax
+    data-speed="0.16"
+  >
+    <!-- Note: `Battery.png` already contains the two green batteries in one image -->
+    <Picture
+      src={Battery}
+      alt=""
+      formats={formats}
+      widths={widths}
+      sizes={sizes}
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: 'home-layout-decor__picture' }}
+    />
+  </div>
+
+  <div
+    class="home-layout-decor__slot home-layout-decor__slot--bottomLeft"
+    style="--w: 155px; --rot: -10deg;"
+    data-parallax
+    data-speed="0.1"
+  >
     <Picture
       src={Circuit}
       alt=""
@@ -67,7 +89,12 @@ const formats = ['avif', 'webp'];
     />
   </div>
 
-  <div class="home-layout-decor__slot home-layout-decor__slot--bottomRight" style="--size: 150px;">
+  <div
+    class="home-layout-decor__slot home-layout-decor__slot--bottomRight"
+    style="--w: 105px; --rot: 8deg;"
+    data-parallax
+    data-speed="0.08"
+  >
     <Picture
       src={Crab}
       alt=""
@@ -81,4 +108,45 @@ const formats = ['avif', 'webp'];
   </div>
 </div>
 
+<script>
+  // Home-only lightweight scroll parallax.
+  // - Respects prefers-reduced-motion
+  // - Uses CSS variables to avoid clobbering base rotations/transforms
+  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  if (!reduceMotion) {
+    const root = document.querySelector('.home-layout-root');
+    const layers = Array.from(document.querySelectorAll('[data-parallax][data-speed]'));
+    const content = document.querySelector('.home-layout-content');
+
+    if (root && layers.length) {
+      let raf = 0;
+      const onScroll = () => {
+        if (raf) return;
+        raf = window.requestAnimationFrame(() => {
+          raf = 0;
+          const rect = root.getBoundingClientRect();
+          const viewH = window.innerHeight || 1;
+          // Progress is 0 when root top hits viewport top, 1 when root bottom hits viewport top.
+          const progress = (0 - rect.top) / Math.max(1, rect.height);
+          const clamped = Math.max(-0.25, Math.min(1.25, progress));
+          const base = (clamped - 0.15) * viewH * 0.08;
+
+          for (const el of layers) {
+            const speed = Number(el.getAttribute('data-speed') || '0.1');
+            el.style.setProperty('--parallaxY', `${base * speed}px`);
+          }
+
+          if (content) {
+            // Subtle opposite motion for content so the decor feels “floaty”.
+            content.style.setProperty('--contentParallaxY', `${base * -0.04}px`);
+          }
+        });
+      };
+
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+    }
+  }
+</script>
 

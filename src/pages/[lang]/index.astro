@@ -30,6 +30,9 @@ const lessonLabelByLang: Record<string, string> = {
   es: 'Lección',
 };
 const lessonLabel = lessonLabelByLang[lang] ?? 'Lesson';
+
+const withBase = (path: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
 ---
 
 <BaseLayout
@@ -72,7 +75,7 @@ const lessonLabel = lessonLabelByLang[lang] ?? 'Lesson';
                   title={lesson.data.title}
                   description={lesson.data.description}
                   category={lesson.data.category}
-                  href={`/${lang}/${lessonUrl}/`}
+                  href={withBase(`/${lang}/${lessonUrl}/`)}
                   client:visible
                 />
               );

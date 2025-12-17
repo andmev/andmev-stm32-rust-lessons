@@ -5,6 +5,7 @@ interface Props {
   availableLanguages: string[];
   languageNames: Record<string, string>;
   currentPath: string;
+  basePath?: string;
 }
 
 export default function LanguagePickerIsland({
@@ -12,6 +13,7 @@ export default function LanguagePickerIsland({
   availableLanguages,
   languageNames,
   currentPath,
+  basePath = '',
 }: Readonly<Props>) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -85,10 +87,16 @@ export default function LanguagePickerIsland({
             {availableLanguages.map((code) => {
               const displayName = languageNames[code] || code.toUpperCase();
               const isCurrent = code === currentLang;
+              const normalizedBase = basePath.replace(/\/$/, '');
+              const pathWithoutBase = normalizedBase && currentPath.startsWith(normalizedBase)
+                ? currentPath.slice(normalizedBase.length)
+                : currentPath;
+              const pathWithoutLang = pathWithoutBase.replace(/^\/[a-z]{2}/, '');
+              const target = `${normalizedBase}/${code}${pathWithoutLang}`.replace(/\/{2,}/g, '/');
               return (
                 <a
                   key={code}
-                  href={`/${code}${currentPath.replace(/^\/[a-z]{2}/, '')}`}
+                  href={target}
                   role="menuitem"
                   className={[
                     'rounded-xl px-3 py-2 text-sm transition',

@@ -37,6 +37,9 @@ export async function getStaticPaths() {
 const { lang } = Astro.params;
 const { lesson, prevLesson, nextLesson } = Astro.props;
 const { Content } = await render(lesson);
+
+const withBase = (path: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
 ---
 
 <BaseLayout
@@ -76,7 +79,7 @@ const { Content } = await render(lesson);
         {prevLesson ? (
           <a
             class="lesson-nav-card"
-            href={`/${lang}/${prevLesson.slug}/`}
+            href={withBase(`/${lang}/${prevLesson.slug}/`)}
             aria-label={`Previous lesson: ${prevLesson.title}`}
           >
             <span class="lesson-nav-direction">Previous</span>
@@ -89,7 +92,7 @@ const { Content } = await render(lesson);
         {nextLesson ? (
           <a
             class="lesson-nav-card lesson-nav-card--next"
-            href={`/${lang}/${nextLesson.slug}/`}
+            href={withBase(`/${lang}/${nextLesson.slug}/`)}
             aria-label={`Next lesson: ${nextLesson.title}`}
           >
             <span class="lesson-nav-direction">Next</span>

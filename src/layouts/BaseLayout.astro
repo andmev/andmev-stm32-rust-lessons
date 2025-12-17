@@ -75,8 +75,8 @@ const socialImage = ogImage || new URL('/favicon.svg', site).href;
 
     <ClientRouter />
   </head>
-  <body>
-    <main>
+  <body class="flex min-h-screen flex-col bg-background text-foreground">
+    <main class="flex-1">
       <slot />
     </main>
 

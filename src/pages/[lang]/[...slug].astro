@@ -9,21 +9,33 @@ export async function getStaticPaths() {
 
   return languages.flatMap((lang) => {
     // Lessons are now at content/en/lessons/*.mdx
-    const langLessons = lessons.filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`));
-    return langLessons.map((lesson) => {
-      // Extract slug from id: "en/lessons/getting-started.mdx" -> "getting-started"
-      const defaultSlug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
-      const slug = lesson.data.url || defaultSlug;
+    const langLessons = lessons
+      .filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`))
+      .map((lesson) => {
+        const defaultSlug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
+        const slug = lesson.data.url || defaultSlug;
+        return { ...lesson, slug };
+      })
+      .sort((a, b) => a.data.order - b.data.order);
+
+    return langLessons.map((lesson, index) => {
+      const prev = langLessons[index - 1];
+      const next = langLessons[index + 1];
+
       return {
-        params: { lang, slug },
-        props: { lesson },
+        params: { lang, slug: lesson.slug },
+        props: {
+          lesson,
+          prevLesson: prev ? { title: prev.data.title, slug: prev.slug } : null,
+          nextLesson: next ? { title: next.data.title, slug: next.slug } : null,
+        },
       };
     });
   });
 }
 
 const { lang } = Astro.params;
-const { lesson } = Astro.props;
+const { lesson, prevLesson, nextLesson } = Astro.props;
 const { Content } = await render(lesson);
 ---
 
@@ -38,7 +50,55 @@ const { Content } = await render(lesson);
   twitterCard={lesson.data.twitterCard}
   canonicalUrl={lesson.data.canonicalUrl}
 >
-  <article>
-    <Content />
+  <article class="mx-auto w-full max-w-[78rem] px-4 pb-20 pt-16 sm:px-6 md:pb-28 md:pt-24">
+    <header class="mx-auto w-full max-w-[54rem] text-center">
+      <h1
+        class="font-serif tracking-[-0.02em] leading-[1.08] [text-wrap:balance] [font-size:clamp(2.6rem,3.1vw+1.4rem,4.1rem)] mx-auto max-w-[24ch]"
+      >
+        {lesson.data.title}
+      </h1>
+
+      <p
+        class="mx-auto mt-5 max-w-[52ch] font-sans-narrow text-muted leading-[1.65] [text-wrap:pretty] [font-size:clamp(1.06rem,0.55vw+0.96rem,1.35rem)]"
+      >
+        {lesson.data.description}
+      </p>
+    </header>
+
+    <div class="mx-auto mt-12 w-full max-w-[min(82vw,68rem)]">
+      <div class="lesson-prose">
+        <Content />
+      </div>
+    </div>
+
+    {(prevLesson || nextLesson) && (
+      <nav class="lesson-bottom-nav" aria-label="Lesson navigation">
+        {prevLesson ? (
+          <a
+            class="lesson-nav-card"
+            href={`/${lang}/${prevLesson.slug}/`}
+            aria-label={`Previous lesson: ${prevLesson.title}`}
+          >
+            <span class="lesson-nav-direction">Previous</span>
+            <span class="lesson-nav-title">{prevLesson.title}</span>
+          </a>
+        ) : (
+          <span class="lesson-nav-spacer" aria-hidden="true"></span>
+        )}
+
+        {nextLesson ? (
+          <a
+            class="lesson-nav-card lesson-nav-card--next"
+            href={`/${lang}/${nextLesson.slug}/`}
+            aria-label={`Next lesson: ${nextLesson.title}`}
+          >
+            <span class="lesson-nav-direction">Next</span>
+            <span class="lesson-nav-title">{nextLesson.title}</span>
+          </a>
+        ) : (
+          <span class="lesson-nav-spacer" aria-hidden="true"></span>
+        )}
+      </nav>
+    )}
   </article>
 </BaseLayout>

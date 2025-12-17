@@ -8,13 +8,17 @@ ogTitle: 'Getting Started - STM32 Rust'
 ogType: 'article'
 ---
 
-# Introduction
+## Introduction
 
 Welcome to the **STM32 Rust** course. In this lesson, we will cover the basics of embedded programming with Rust on STM32 microcontrollers.
 
 This is a paragraph with some _emphasis_ and **bold text**. You can also use ~~strikethrough~~ for deleted text.
 
-## Prerequisites
+Lorem ipsum dolor sit amet consectetur. Quis nec pellentesque at felis et dictum enim varius sit. Sed tristique enim accumsan feugiat feugiat. Vel lacus mauris eu eget ac gravida vestibulum vitae et. Eget eget nisi vestibulum hac dolor sapien. Risus egestas dignissim erat dolor id lectus quam mi. Pulvinar blandit eget volutpat dapibus rhoncus ac cras sem nec. Arcu tristique volutpat mattis purus sed vitae lacus et. Urna aliquet convallis tortor posuere enim risus in eget. Nulla velit vel vel vestibulum pellentesque nisi.
+
+Lorem ipsum dolor sit amet consectetur. Mi fermentum turpis pellentesque et neque. Eros mi phasellus consectetur lectus arcu dictum. Auctor non consequat euismod magnis quis hendrerit consequat. Amet praesent viverra posuere massa ante morbi cum mattis nam. Vel ac sit faucibus accumsan condimentum blandit sed libero proin. Volutpat mauris sagittis sem integer consequat bibendum rhoncus amet. Lectus donec ultricies auctor augue ullamcorper. Consectetur erat velit ultrices tortor. Dui feugiat mi laoreet volutpat. Nisl magna tellus nibh.
+
+### Prerequisites
 
 Before we begin, make sure you have the following:
 
@@ -23,17 +27,17 @@ Before we begin, make sure you have the following:
 3. A USB cable
 4. Basic knowledge of Rust programming
 
-### Additional Requirements
+#### Additional Requirements
 
 - Rust toolchain installed
 - `cargo` package manager
 - STM32CubeIDE or similar development environment
 
-#### Optional Tools
+##### Optional Tools
 
 These tools can enhance your development experience but are not strictly required.
 
-##### Very Specific Requirements
+###### Very Specific Requirements
 
 For advanced users, you might want to consider:
 
@@ -41,7 +45,7 @@ For advanced users, you might want to consider:
 
 This is the smallest heading level.
 
-## Code Examples
+### Code Examples
 
 Here's an example of inline code: `println!("Hello, STM32!")`.
 
@@ -55,13 +59,13 @@ fn main() {
 }
 ```
 
-## Blockquotes
+### Blockquotes
 
 > Rust is a systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety.
 >
 > This is a multi-line blockquote to demonstrate how blockquotes look with multiple paragraphs.
 
-## Links
+### Links
 
 Here are some useful links:
 
@@ -69,9 +73,9 @@ Here are some useful links:
 - [STM32 Rust documentation](https://docs.rs/stm32)
 - [Embedded Rust book](https://docs.rust-embedded.org/book/)
 
-## Lists
+### Lists
 
-### Unordered List
+#### Unordered List
 
 - First item
 - Second item
@@ -79,14 +83,14 @@ Here are some useful links:
   - Another nested item
 - Third item
 
-### Ordered List
+#### Ordered List
 
 1. Install Rust toolchain
 2. Add STM32 target
 3. Configure your project
 4. Write your first program
 
-## Tables
+### Tables
 
 Here's a comparison table:
 
@@ -96,7 +100,7 @@ Here's a comparison table:
 | Flash     | 64-512 KB | 512 KB - 2 MB | 1-2 MB  |
 | RAM       | 20-64 KB  | 128-384 KB    | 1 MB    |
 
-## Horizontal Rule
+### Horizontal Rule
 
 This is content before the horizontal rule.
 
@@ -104,8 +108,47 @@ This is content before the horizontal rule.
 
 This is content after the horizontal rule.
 
-## Getting Started
+### Getting Started
 
 Let's get started with your first embedded Rust program!
 
 You can find more information in the [official documentation](https://docs.rust-embedded.org/book/).
+
+### Why Rust on STM32?
+
+Rust’s ownership model eliminates whole classes of firmware bugs (use-after-free, data races) without sacrificing the zero-cost abstractions you expect from C. On STM32, this means:
+
+- Safer peripheral access with type-checked register interfaces.
+- Fewer Heisenbugs in interrupt-heavy code.
+- Easier refactors thanks to the compiler catching aliasing mistakes.
+
+### Debugging & Tooling Basics
+
+Before flashing, make sure you can:
+
+1. Build in release mode: `cargo build --release --target thumbv7em-none-eabihf`
+2. Run unit tests that don’t touch hardware: `cargo test -- --nocapture`
+3. Flash over SWD (e.g., ST-Link): `cargo flash --chip STM32F411RETx --release`
+4. Open a GDB session with RTT or semihosting logs.
+
+If flashing fails, double-check:
+
+- USB cable quality and power.
+- BOOT0/BOOT1 pin states.
+- udev rules (Linux) or interface drivers (Windows).
+
+### Minimal Blinky Checklist
+
+- Clock: confirm HSI/HSE settings match your board.
+- GPIO: enable the port clock (RCC) before toggling a pin.
+- Timing: prefer a timer peripheral over busy loops for accurate delays.
+- Sleep: use `wfi` when idle to reduce power and heat.
+
+### Production Tips
+
+- Enable `panic-halt` (or `panic-rtt-target`) to avoid silent lockups.
+- Add a watchdog early; test that it actually resets on stall.
+- Capture a reset reason in a static buffer for post-mortems.
+- Keep linker scripts under version control and reviewed.
+
+With these basics squared away, you’ll move faster on the remaining lessons while keeping firmware stable.

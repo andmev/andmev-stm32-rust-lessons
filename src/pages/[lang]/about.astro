@@ -17,20 +17,27 @@ if (!aboutContent) {
 }
 
 const { Content } = await render(aboutContent);
+const pageDescription =
+  aboutContent.data.description ??
+  'Learn what STM32 Rust Lessons offers and how it can help you.';
 ---
 
 <BaseLayout
   lang={lang}
   title={aboutContent.data.title}
-  description={aboutContent.data.description}
-  ogTitle={aboutContent.data.ogTitle}
-  ogDescription={aboutContent.data.ogDescription}
+  description={pageDescription}
+  ogTitle={aboutContent.data.ogTitle || aboutContent.data.title}
+  ogDescription={aboutContent.data.ogDescription || pageDescription}
   ogImage={aboutContent.data.ogImage}
-  ogType={aboutContent.data.ogType}
-  twitterCard={aboutContent.data.twitterCard}
+  ogType={aboutContent.data.ogType || 'article'}
+  twitterCard={aboutContent.data.twitterCard || 'summary'}
   canonicalUrl={aboutContent.data.canonicalUrl}
 >
-  <article>
-    <Content />
+  <article class="mx-auto w-full max-w-[78rem] px-4 pb-20 pt-16 sm:px-6 md:pb-28 md:pt-24">
+    <div class="mx-auto w-full max-w-[min(82vw,68rem)]">
+      <div class="lesson-prose">
+        <Content />
+      </div>
+    </div>
   </article>
 </BaseLayout>

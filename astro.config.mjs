@@ -11,8 +11,14 @@ import rehypeSlug from 'rehype-slug';
 import remarkGithubBlockquoteAlert from 'remark-github-blockquote-alert';
 
 // https://astro.build/config
+const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+
 export default defineConfig({
-  site: 'https://stm32-rust.org', // Replace with your actual domain
+  // Keep local dev at root; only prepend the repo path when building for GitHub Pages.
+  site: isGitHubPages
+    ? 'https://andmev.github.io/andmev-stm32-rust-lessons'
+    : 'http://localhost:4321',
+  base: isGitHubPages ? '/andmev-stm32-rust-lessons' : '/',
   prefetch: true,
   vite: {
     // @ts-expect-error

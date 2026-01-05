@@ -272,13 +272,11 @@
 @layer components {
   /* Lesson page editorial typography (tighter + calmer than default `prose`) */
   :is(.lesson-prose, .lesson-content) {
-    @apply prose;
+    @apply prose max-w-none;
     font-family: var(--font-sans);
     font-size: clamp(1.03rem, 0.25vw + 1rem, 1.12rem);
     line-height: 1.75;
     width: 100%;
-    max-width: 74ch;
-    margin-inline: auto;
   }
 
   /* Technical-docs polish for all MDX-generated tags (scoped) */
@@ -351,7 +349,6 @@
     margin-top: 1.1em;
     margin-bottom: 0.3em;
     letter-spacing: 0.01em;
-    color: var(--color-muted);
   }
 
   /* Links */

@@ -14,10 +14,10 @@ const formats = ['avif', 'webp'];
 
 <!-- Decorative only: hidden from assistive tech. -->
 <div class="home-layout-decor" aria-hidden="true">
-  <!-- Layout matches Figma “Home” frame (node 1:2) using a fixed mapping -->
+  <!-- Layout matches Figma "Home" frame (node 1:2) using a fixed mapping -->
   <div
     class="home-layout-decor__slot home-layout-decor__slot--topRight"
-    style="--w: 162px; --rot: 10deg;"
+    data-slot="topRight"
     data-parallax
     data-speed="0.18"
   >
@@ -35,7 +35,7 @@ const formats = ['avif', 'webp'];
 
   <div
     class="home-layout-decor__slot home-layout-decor__slot--midLeft"
-    style="--w: 194px; --rot: -12deg;"
+    data-slot="midLeft"
     data-parallax
     data-speed="0.12"
   >
@@ -51,10 +51,10 @@ const formats = ['avif', 'webp'];
     />
   </div>
 
-  <!-- Figma has two stacked “battery” assets on the right. We mimic with two layers. -->
+  <!-- Figma has two stacked "battery" assets on the right. We mimic with two layers. -->
   <div
     class="home-layout-decor__slot home-layout-decor__slot--midRight"
-    style="--w: 223px; --rot: 14deg;"
+    data-slot="midRight"
     data-parallax
     data-speed="0.16"
   >
@@ -73,7 +73,7 @@ const formats = ['avif', 'webp'];
 
   <div
     class="home-layout-decor__slot home-layout-decor__slot--bottomLeft"
-    style="--w: 155px; --rot: -10deg;"
+    data-slot="bottomLeft"
     data-parallax
     data-speed="0.1"
   >
@@ -91,7 +91,7 @@ const formats = ['avif', 'webp'];
 
   <div
     class="home-layout-decor__slot home-layout-decor__slot--bottomRight"
-    style="--w: 105px; --rot: 8deg;"
+    data-slot="bottomRight"
     data-parallax
     data-speed="0.08"
   >
@@ -107,6 +107,30 @@ const formats = ['avif', 'webp'];
     />
   </div>
 </div>
+
+<style>
+  /* CSP-compliant: Define custom properties via selectors instead of inline styles */
+  [data-slot='topRight'] {
+    --w: 162px;
+    --rot: 10deg;
+  }
+  [data-slot='midLeft'] {
+    --w: 194px;
+    --rot: -12deg;
+  }
+  [data-slot='midRight'] {
+    --w: 223px;
+    --rot: 14deg;
+  }
+  [data-slot='bottomLeft'] {
+    --w: 155px;
+    --rot: -10deg;
+  }
+  [data-slot='bottomRight'] {
+    --w: 105px;
+    --rot: 8deg;
+  }
+</style>
 
 <script>
   // Home-only lightweight scroll parallax.

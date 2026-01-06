@@ -33,7 +33,7 @@ export default defineConfig({
     csp: {
       algorithm: 'SHA-256',
       styleDirective: {
-        resources: ['https://fonts.googleapis.com'],
+        resources: ["'self'", 'https://fonts.googleapis.com'],
       },
       scriptDirective: {
         resources: [],

@@ -24,7 +24,7 @@ export async function getAvailableLanguages(): Promise<string[]> {
   // Extract unique language codes from lesson IDs (e.g., "en/lessons/getting-started" -> "en")
   const languages = new Set<string>();
 
-  lessons.forEach((lesson) => {
+  lessons?.forEach((lesson) => {
     const lang = lesson.id.split('/')[0];
     if (lang) {
       // Validate against supported languages

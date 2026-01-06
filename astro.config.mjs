@@ -36,8 +36,13 @@ export default defineConfig({
         resources: ["'self'", 'https://fonts.googleapis.com'],
       },
       scriptDirective: {
-        resources: [],
+        resources: ["'self'"],
       },
+      directives: [
+        "font-src 'self' https://fonts.gstatic.com",
+        "img-src 'self' data:",
+        "default-src 'self'",
+      ],
     },
   },
   vite: {

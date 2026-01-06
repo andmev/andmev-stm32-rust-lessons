@@ -110,7 +110,7 @@ export default function LanguagePickerIsland({
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-label="Select language"
-        className="inline-flex items-center gap-2 rounded-full bg-surface px-3 py-2 text-sm text-muted transition hover:text-foreground hover:shadow-[0px_14px_25px_0px_rgba(0,0,0,0.10)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="bg-surface text-muted hover:text-foreground focus-visible:ring-foreground/20 focus-visible:ring-offset-background inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm transition hover:shadow-[0px_14px_25px_0px_rgba(0,0,0,0.10)] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
         {languageNames[currentLang] || currentLang.toUpperCase()}
         <svg
@@ -128,7 +128,7 @@ export default function LanguagePickerIsland({
         <div
           role="menu"
           aria-orientation="vertical"
-          className="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-2xl bg-surface p-1 shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] ring-1 ring-foreground/10"
+          className="bg-surface ring-foreground/10 absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-2xl p-1 shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] ring-1"
         >
           <div className="flex flex-col">
             {availableLanguages.map((code) => {
@@ -143,7 +143,7 @@ export default function LanguagePickerIsland({
                   className={[
                     'rounded-xl px-3 py-2 text-sm transition',
                     isCurrent ? 'text-foreground' : 'text-muted hover:text-foreground',
-                    'hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20',
+                    'hover:bg-foreground/5 focus-visible:ring-foreground/20 focus-visible:ring-2 focus-visible:outline-none',
                   ].join(' ')}
                 >
                   {displayName}

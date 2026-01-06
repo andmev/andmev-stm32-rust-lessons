@@ -15,10 +15,10 @@ interface Props {
 const { lang, pages, availableLanguages, currentPath, basePath } = Astro.props;
 ---
 
-<footer class="mt-16 border-t border-foreground/10">
+<footer class="border-foreground/10 mt-16 border-t">
   <div class="mx-auto w-full max-w-[68rem] px-4 py-10 sm:px-6">
     <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-      <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
+      <nav class="text-muted flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
         {
           pages.map((page) => {
             const href = withBase(`/${lang}${page.data.url ? '/' + page.data.url : '/'}`);
@@ -30,7 +30,7 @@ const { lang, pages, availableLanguages, currentPath, basePath } = Astro.props;
             return isActive ? (
               <span class="text-foreground">{page.data.name}</span>
             ) : (
-              <a class="transition hover:text-foreground" href={href}>
+              <a class="hover:text-foreground transition" href={href}>
                 {page.data.name}
               </a>
             );
@@ -51,7 +51,7 @@ const { lang, pages, availableLanguages, currentPath, basePath } = Astro.props;
       </div>
     </div>
 
-    <p class="mt-8 text-sm text-muted">
+    <p class="text-muted mt-8 text-sm">
       &copy; {new Date().getFullYear()} STM32 Rust Lessons
     </p>
   </div>

@@ -38,8 +38,7 @@ const { lang } = Astro.params;
 const { lesson, prevLesson, nextLesson } = Astro.props;
 const { Content } = await render(lesson);
 
-const withBase = (path: string) =>
-  `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
+const withBase = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
 ---
 
 <BaseLayout
@@ -53,16 +52,16 @@ const withBase = (path: string) =>
   twitterCard={lesson.data.twitterCard}
   canonicalUrl={lesson.data.canonicalUrl}
 >
-  <article class="mx-auto w-full max-w-[78rem] px-4 pb-20 pt-16 sm:px-6 md:pb-28 md:pt-24">
+  <article class="mx-auto w-full max-w-[78rem] px-4 pt-16 pb-20 sm:px-6 md:pt-24 md:pb-28">
     <header class="mx-auto w-full max-w-[54rem] text-center">
       <h1
-        class="font-serif tracking-[-0.02em] leading-[1.08] [text-wrap:balance] [font-size:clamp(2.6rem,3.1vw+1.4rem,4.1rem)] mx-auto max-w-[24ch]"
+        class="mx-auto max-w-[24ch] font-serif [font-size:clamp(2.6rem,3.1vw+1.4rem,4.1rem)] leading-[1.08] tracking-[-0.02em] [text-wrap:balance]"
       >
         {lesson.data.title}
       </h1>
 
       <p
-        class="mx-auto mt-5 max-w-[52ch] font-sans-narrow text-muted leading-[1.65] [text-wrap:pretty] [font-size:clamp(1.06rem,0.55vw+0.96rem,1.35rem)]"
+        class="font-sans-narrow text-muted mx-auto mt-5 max-w-[52ch] [font-size:clamp(1.06rem,0.55vw+0.96rem,1.35rem)] leading-[1.65] [text-wrap:pretty]"
       >
         {lesson.data.description}
       </p>
@@ -74,34 +73,36 @@ const withBase = (path: string) =>
       </div>
     </div>
 
-    {(prevLesson || nextLesson) && (
-      <nav class="lesson-bottom-nav" aria-label="Lesson navigation">
-        {prevLesson ? (
-          <a
-            class="lesson-nav-card"
-            href={withBase(`/${lang}/${prevLesson.slug}/`)}
-            aria-label={`Previous lesson: ${prevLesson.title}`}
-          >
-            <span class="lesson-nav-direction">Previous</span>
-            <span class="lesson-nav-title">{prevLesson.title}</span>
-          </a>
-        ) : (
-          <span class="lesson-nav-spacer" aria-hidden="true"></span>
-        )}
+    {
+      (prevLesson || nextLesson) && (
+        <nav class="lesson-bottom-nav" aria-label="Lesson navigation">
+          {prevLesson ? (
+            <a
+              class="lesson-nav-card"
+              href={withBase(`/${lang}/${prevLesson.slug}/`)}
+              aria-label={`Previous lesson: ${prevLesson.title}`}
+            >
+              <span class="lesson-nav-direction">Previous</span>
+              <span class="lesson-nav-title">{prevLesson.title}</span>
+            </a>
+          ) : (
+            <span class="lesson-nav-spacer" aria-hidden="true" />
+          )}
 
-        {nextLesson ? (
-          <a
-            class="lesson-nav-card lesson-nav-card--next"
-            href={withBase(`/${lang}/${nextLesson.slug}/`)}
-            aria-label={`Next lesson: ${nextLesson.title}`}
-          >
-            <span class="lesson-nav-direction">Next</span>
-            <span class="lesson-nav-title">{nextLesson.title}</span>
-          </a>
-        ) : (
-          <span class="lesson-nav-spacer" aria-hidden="true"></span>
-        )}
-      </nav>
-    )}
+          {nextLesson ? (
+            <a
+              class="lesson-nav-card lesson-nav-card--next"
+              href={withBase(`/${lang}/${nextLesson.slug}/`)}
+              aria-label={`Next lesson: ${nextLesson.title}`}
+            >
+              <span class="lesson-nav-direction">Next</span>
+              <span class="lesson-nav-title">{nextLesson.title}</span>
+            </a>
+          ) : (
+            <span class="lesson-nav-spacer" aria-hidden="true" />
+          )}
+        </nav>
+      )
+    }
   </article>
 </BaseLayout>

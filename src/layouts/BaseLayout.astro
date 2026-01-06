@@ -33,9 +33,9 @@ const {
 
 const availableLanguages = await getAvailableLanguages();
 
-const pages = (
-  await getCollection('pages', ({ id }) => id.startsWith(`${lang}/`))
-).sort((a, b) => a.data.order - b.data.order);
+const pages = (await getCollection('pages', ({ id }) => id.startsWith(`${lang}/`))).sort(
+  (a, b) => a.data.order - b.data.order
+);
 
 const site = Astro.site ? Astro.site.href : Astro.url.origin;
 ---
@@ -65,7 +65,7 @@ const site = Astro.site ? Astro.site.href : Astro.url.origin;
 
     <ClientRouter />
   </head>
-  <body class="flex min-h-screen flex-col bg-background text-foreground">
+  <body class="bg-background text-foreground flex min-h-screen flex-col">
     <main class="flex-1">
       <slot />
     </main>

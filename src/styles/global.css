@@ -51,7 +51,11 @@
 @layer base {
   html {
     font-kerning: normal;
-    font-feature-settings: 'kern' 1, 'liga' 1, 'clig' 1, 'calt' 1;
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1,
+      'clig' 1,
+      'calt' 1;
     background-color: var(--color-background);
   }
 
@@ -95,14 +99,14 @@
   }
 
   .home-hero h2 {
-    @apply font-serif text-center uppercase;
+    @apply text-center font-serif uppercase;
     letter-spacing: 0.16em;
     font-size: clamp(1.125rem, 1.25vw + 0.65rem, 2.5rem);
     line-height: 1.15;
   }
 
   .home-hero h1 {
-    @apply font-serif text-center;
+    @apply text-center font-serif;
     font-size: clamp(3rem, 5.2vw + 1rem, 6rem);
     line-height: 1.05;
     text-wrap: balance;
@@ -302,21 +306,31 @@
     /* Local tokens (derived from existing theme vars) */
     /* Use background as the base so dark mode stays readable */
     --lesson-border: color-mix(in oklab, var(--color-foreground) 16%, var(--color-background) 84%);
-    --lesson-border-strong: color-mix(in oklab, var(--color-foreground) 22%, var(--color-background) 78%);
+    --lesson-border-strong: color-mix(
+      in oklab,
+      var(--color-foreground) 22%,
+      var(--color-background) 78%
+    );
     --lesson-soft-bg: color-mix(in oklab, var(--color-background) 86%, var(--color-foreground) 14%);
-    --lesson-soft-bg-2: color-mix(in oklab, var(--color-background) 80%, var(--color-foreground) 20%);
-    --lesson-link-underline: color-mix(in oklab, var(--color-foreground) 38%, var(--color-background) 62%);
+    --lesson-soft-bg-2: color-mix(
+      in oklab,
+      var(--color-background) 80%,
+      var(--color-foreground) 20%
+    );
+    --lesson-link-underline: color-mix(
+      in oklab,
+      var(--color-foreground) 38%,
+      var(--color-background) 62%
+    );
   }
 
-  :is(.lesson-prose, .lesson-content)
-    p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0.95em;
     margin-bottom: 0;
     color: var(--color-foreground);
   }
 
-  :is(.lesson-prose, .lesson-content)
-    h2:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) h2:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply font-sans font-bold;
     color: var(--color-foreground);
     font-size: clamp(1.35rem, 0.7vw + 1.2rem, 1.75rem);
@@ -326,8 +340,7 @@
     letter-spacing: -0.01em;
   }
 
-  :is(.lesson-prose, .lesson-content)
-    h3:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) h3:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply font-sans font-bold;
     color: var(--color-foreground);
     font-size: clamp(1.15rem, 0.45vw + 1.05rem, 1.35rem);
@@ -337,8 +350,7 @@
     letter-spacing: -0.01em;
   }
 
-  :is(.lesson-prose, .lesson-content)
-    h4:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) h4:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply font-sans font-semibold;
     color: var(--color-foreground);
     font-size: 1.06rem;
@@ -347,8 +359,7 @@
     margin-bottom: 0.4em;
   }
 
-  :is(.lesson-prose, .lesson-content)
-    h5:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) h5:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply font-sans font-semibold;
     color: var(--color-foreground);
     font-size: 1rem;
@@ -358,8 +369,7 @@
     letter-spacing: -0.005em;
   }
 
-  :is(.lesson-prose, .lesson-content)
-    h6:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) h6:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply font-sans font-semibold;
     color: var(--color-foreground);
     font-size: 0.93rem;
@@ -370,8 +380,7 @@
   }
 
   /* Links */
-  :is(.lesson-prose, .lesson-content)
-    a:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) a:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     color: var(--color-foreground);
     text-decoration: underline;
     text-decoration-color: var(--lesson-link-underline);
@@ -394,8 +403,7 @@
     color: var(--color-foreground);
   }
 
-  :is(.lesson-prose, .lesson-content)
-    em:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) em:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     font-style: italic;
     color: var(--color-foreground);
   }
@@ -436,8 +444,7 @@
     color: var(--color-foreground);
   }
 
-  :is(.lesson-prose, .lesson-content)
-    li:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) li:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0.35em;
     margin-bottom: 0.35em;
     color: var(--color-foreground);
@@ -448,9 +455,7 @@
   }
 
   :is(.lesson-prose, .lesson-content)
-    :is(ul ul, ul ol, ol ul, ol ol):not(
-      :where([class~='not-prose'], [class~='not-prose'] *)
-    ) {
+    :is(ul ul, ul ol, ol ul, ol ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0.55em;
     margin-bottom: 0.55em;
   }
@@ -465,12 +470,14 @@
   }
 
   :is(.lesson-prose, .lesson-content)
-    blockquote p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    blockquote
+    p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0.6em;
   }
 
   :is(.lesson-prose, .lesson-content)
-    blockquote p:first-child:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    blockquote
+    p:first-child:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin-top: 0;
   }
 
@@ -487,7 +494,8 @@
   }
 
   :is(.lesson-prose, .lesson-content)
-    pre code:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    pre
+    code:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     @apply font-mono;
     font-size: 1em;
     padding: 0;
@@ -517,8 +525,7 @@
     background: var(--lesson-soft-bg-2);
   }
 
-  :is(.lesson-prose, .lesson-content)
-    th:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) th:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     font-weight: 700;
     border-bottom-color: var(--lesson-border-strong);
   }
@@ -531,15 +538,13 @@
   }
 
   :is(.lesson-prose, .lesson-content)
-    tbody tr:nth-child(even):not(
-      :where([class~='not-prose'], [class~='not-prose'] *)
-    ) {
+    tbody
+    tr:nth-child(even):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     background: color-mix(in oklab, var(--color-foreground) 3.25%, transparent);
   }
 
   /* Horizontal rule */
-  :is(.lesson-prose, .lesson-content)
-    hr:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  :is(.lesson-prose, .lesson-content) hr:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     border-color: var(--lesson-border);
     margin-top: 2em;
     margin-bottom: 2em;

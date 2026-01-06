@@ -18,8 +18,7 @@ if (!aboutContent) {
 
 const { Content } = await render(aboutContent);
 const pageDescription =
-  aboutContent.data.description ??
-  'Learn what STM32 Rust Lessons offers and how it can help you.';
+  aboutContent.data.description ?? 'Learn what STM32 Rust Lessons offers and how it can help you.';
 ---
 
 <BaseLayout
@@ -33,7 +32,7 @@ const pageDescription =
   twitterCard={aboutContent.data.twitterCard || 'summary'}
   canonicalUrl={aboutContent.data.canonicalUrl}
 >
-  <article class="mx-auto w-full max-w-[78rem] px-4 pb-20 pt-16 sm:px-6 md:pb-28 md:pt-24">
+  <article class="mx-auto w-full max-w-[78rem] px-4 pt-16 pb-20 sm:px-6 md:pt-24 md:pb-28">
     <div class="mx-auto w-full max-w-[min(82vw,68rem)]">
       <div class="lesson-prose">
         <Content />

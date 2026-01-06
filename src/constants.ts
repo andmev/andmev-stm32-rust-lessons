@@ -1,11 +1,6 @@
-export const DEFAULT_LANGUAGE = 'en' as const;
-export const SUPPORTED_LANGUAGES = ['en', 'es', 'uk', 'fr', 'de'] as const;
-export type Language = (typeof SUPPORTED_LANGUAGES)[number];
+import { config, type Language } from '@/config';
 
-export const LANGUAGE_DISPLAY_NAMES: Record<Language, string> = {
-  en: 'English',
-  es: 'Español',
-  uk: 'Українська',
-  fr: 'Français',
-  de: 'Deutsch',
-} as const;
+export const DEFAULT_LANGUAGE = config.languages.default;
+export const SUPPORTED_LANGUAGES = config.languages.supported;
+export const LANGUAGE_DISPLAY_NAMES = config.languages.names;
+export type { Language };

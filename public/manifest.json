@@ -1,0 +1,16 @@
+{
+  "name": "STM32 Rust Lessons",
+  "short_name": "STM32 Rust",
+  "description": "Learn embedded Rust for STM32 microcontrollers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfbfb",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

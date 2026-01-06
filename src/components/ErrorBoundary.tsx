@@ -1,5 +1,6 @@
 import { Component, type ComponentChildren } from 'preact';
 import styles from './ErrorBoundary.module.css';
+import { reportError } from '@/utils/error-tracking';
 
 interface Props {
   children: ComponentChildren;
@@ -33,9 +34,8 @@ export class ErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: { componentStack?: string }) {
-    // Log error for debugging
-    console.error('[ErrorBoundary] Component error caught:', error, errorInfo);
+  componentDidCatch(error: Error, _errorInfo: { componentStack?: string }) {
+    reportError(error, 'ErrorBoundary');
   }
 
   render() {

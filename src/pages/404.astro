@@ -1,15 +1,60 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { withBase } from '@/utils/url';
+import { getAvailableLanguages } from '@/utils/languages';
 
-const lang = 'en'; // Default to English for 404 page
+// Get current path and detect language
+const currentPath = Astro.url.pathname;
+const availableLanguages = await getAvailableLanguages();
+
+// Simple heuristic: check if path starts with a supported language
+// Remove base path first if present
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pathWithoutBase = currentPath.replace(new RegExp(`^${basePath}`), '');
+const pathSegments = pathWithoutBase.split('/').filter(Boolean);
+const detectedLang =
+  pathSegments.length > 0 && availableLanguages.includes(pathSegments[0]) ? pathSegments[0] : 'en';
+
+// Simple translations for 404 page
+const translations: Record<string, { title: string; desc: string; home: string; lessons: string }> =
+  {
+    en: {
+      title: 'Page Not Found',
+      desc: "Oops! The page you're looking for doesn't exist. It might have been moved or deleted.",
+      home: 'Go to Home Page',
+      lessons: 'Browse Lessons',
+    },
+    es: {
+      title: 'Página no encontrada',
+      desc: '¡Vaya! La página que buscas no existe. Puede que se haya movido o eliminado.',
+      home: 'Ir a la página de inicio',
+      lessons: 'Ver lecciones',
+    },
+    uk: {
+      title: 'Сторінку не знайдено',
+      desc: 'Ой! Сторінка, яку ви шукаєте, не існує. Можливо, її було переміщено або видалено.',
+      home: 'На головну',
+      lessons: 'Переглянути уроки',
+    },
+    fr: {
+      title: 'Page non trouvée',
+      desc: "Oups! La page que vous recherchez n'existe pas.",
+      home: "Aller à l'accueil",
+      lessons: 'Parcourir les leçons',
+    },
+    de: {
+      title: 'Seite nicht gefunden',
+      desc: 'Hoppla! Die gesuchte Seite existiert nicht.',
+      home: 'Zur Startseite',
+      lessons: 'Lektionen durchsuchen',
+    },
+  };
+
+const t = translations[detectedLang] || translations.en;
+const lang = detectedLang;
 ---
 
-<BaseLayout
-  lang={lang}
-  title="404 - Page Not Found | STM32 Rust Lessons"
-  description="The page you're looking for doesn't exist. Return to the home page to explore STM32 Rust tutorials."
->
+<BaseLayout lang={lang} title={`404 - ${t.title} | STM32 Rust Lessons`} description={t.desc}>
   <div
     class="mx-auto flex min-h-[60vh] w-full max-w-[68rem] flex-col items-center justify-center px-4 py-16 text-center sm:px-6"
   >
@@ -17,24 +62,24 @@ const lang = 'en'; // Default to English for 404 page
       <h1 class="text-foreground mb-4 font-serif text-6xl font-bold tracking-tight sm:text-8xl">
         404
       </h1>
-      <h2 class="text-foreground mb-6 text-xl font-semibold sm:text-2xl">Page Not Found</h2>
+      <h2 class="text-foreground mb-6 text-xl font-semibold sm:text-2xl">{t.title}</h2>
       <p class="text-muted mx-auto max-w-md text-base sm:text-lg">
-        Oops! The page you're looking for doesn't exist. It might have been moved or deleted.
+        {t.desc}
       </p>
     </div>
 
     <div class="flex flex-col gap-4 sm:flex-row">
       <a
-        href={withBase('/en/')}
+        href={withBase(`/${lang}/`)}
         class="bg-foreground text-background inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition hover:opacity-90"
       >
-        Go to Home Page
+        {t.home}
       </a>
       <a
-        href={withBase('/en/getting-started/')}
+        href={withBase(`/${lang}/lessons/getting-started/`)}
         class="border-foreground/20 text-foreground hover:border-foreground/40 hover:bg-foreground/5 inline-flex items-center justify-center rounded-full border px-6 py-3 font-semibold transition"
       >
-        Browse Lessons
+        {t.lessons}
       </a>
     </div>
   </div>

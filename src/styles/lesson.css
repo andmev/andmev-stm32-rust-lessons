@@ -1,0 +1,358 @@
+@layer components {
+  /* Lesson page editorial typography (tighter + calmer than default `prose`) */
+  :is(.lesson-prose, .lesson-content) {
+    @apply prose max-w-none;
+    font-family: var(--font-sans);
+    font-size: clamp(1.03rem, 0.25vw + 1rem, 1.12rem);
+    line-height: 1.75;
+    width: 100%;
+  }
+
+  /* Technical-docs polish for all MDX-generated tags (scoped) */
+  :is(.lesson-prose, .lesson-content) {
+    /* Local tokens (derived from existing theme vars) */
+    /* Use background as the base so dark mode stays readable */
+    --lesson-border: color-mix(in oklab, var(--color-foreground) 16%, var(--color-background) 84%);
+    --lesson-border-strong: color-mix(
+      in oklab,
+      var(--color-foreground) 22%,
+      var(--color-background) 78%
+    );
+    --lesson-soft-bg: color-mix(in oklab, var(--color-background) 86%, var(--color-foreground) 14%);
+    --lesson-soft-bg-2: color-mix(
+      in oklab,
+      var(--color-background) 80%,
+      var(--color-foreground) 20%
+    );
+    --lesson-link-underline: color-mix(
+      in oklab,
+      var(--color-foreground) 38%,
+      var(--color-background) 62%
+    );
+  }
+
+  :is(.lesson-prose, .lesson-content) p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.95em;
+    margin-bottom: 0;
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content) h2:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-sans font-bold;
+    color: var(--color-foreground);
+    font-size: clamp(1.35rem, 0.7vw + 1.2rem, 1.75rem);
+    line-height: 1.2;
+    margin-top: 2.1em;
+    margin-bottom: 0.6em;
+    letter-spacing: -0.01em;
+  }
+
+  :is(.lesson-prose, .lesson-content) h3:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-sans font-bold;
+    color: var(--color-foreground);
+    font-size: clamp(1.15rem, 0.45vw + 1.05rem, 1.35rem);
+    line-height: 1.25;
+    margin-top: 1.7em;
+    margin-bottom: 0.5em;
+    letter-spacing: -0.01em;
+  }
+
+  :is(.lesson-prose, .lesson-content) h4:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-sans font-semibold;
+    color: var(--color-foreground);
+    font-size: 1.06rem;
+    line-height: 1.35;
+    margin-top: 1.4em;
+    margin-bottom: 0.4em;
+  }
+
+  :is(.lesson-prose, .lesson-content) h5:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-sans font-semibold;
+    color: var(--color-foreground);
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-top: 1.2em;
+    margin-bottom: 0.35em;
+    letter-spacing: -0.005em;
+  }
+
+  :is(.lesson-prose, .lesson-content) h6:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-sans font-semibold;
+    color: var(--color-foreground);
+    font-size: 0.93rem;
+    line-height: 1.35;
+    margin-top: 1.1em;
+    margin-bottom: 0.3em;
+    letter-spacing: 0.01em;
+  }
+
+  /* Links */
+  :is(.lesson-prose, .lesson-content) a:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-decoration-color: var(--lesson-link-underline);
+    text-decoration-thickness: 0.095em;
+    text-underline-offset: 0.18em;
+    transition:
+      text-decoration-color 160ms ease,
+      color 160ms ease;
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    a:hover:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    text-decoration-color: color-mix(in oklab, var(--color-foreground) 70%, transparent);
+  }
+
+  /* Emphasis & inline semantics */
+  :is(.lesson-prose, .lesson-content)
+    strong:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content) em:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-style: italic;
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    del:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    text-decoration-thickness: 0.12em;
+    text-decoration-color: color-mix(in oklab, var(--color-muted) 70%, transparent);
+    color: color-mix(in oklab, var(--color-foreground) 70%, var(--color-muted) 30%);
+  }
+
+  /* Inline code "chip" */
+  :is(.lesson-prose, .lesson-content)
+    code:not(:where(pre code, [class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-mono;
+    font-size: 0.92em;
+    padding: var(--padding-xs);
+    border-radius: 0.5em;
+    background: var(--lesson-soft-bg);
+    border: 1px solid var(--lesson-border);
+    white-space: break-spaces;
+    color: var(--color-foreground);
+  }
+
+  /* Don’t add quote marks to inline code (Tailwind Typography default) */
+  :is(.lesson-prose, .lesson-content)
+    code:not(:where(pre code, [class~='not-prose'], [class~='not-prose'] *))::before,
+  :is(.lesson-prose, .lesson-content)
+    code:not(:where(pre code, [class~='not-prose'], [class~='not-prose'] *))::after {
+    content: none;
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    :is(ul, ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.9em;
+    margin-bottom: 0;
+    padding-left: 1.15em;
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content) li:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.35em;
+    margin-bottom: 0.35em;
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content) li::marker {
+    color: var(--color-muted);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    :is(ul ul, ul ol, ol ul, ol ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.55em;
+    margin-bottom: 0.55em;
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    blockquote:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    border-left-color: var(--lesson-border-strong);
+    background: var(--lesson-soft-bg);
+    border-radius: var(--radius-md);
+    padding: var(--padding-md);
+    color: color-mix(in oklab, var(--color-foreground) 88%, var(--color-muted) 12%);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    blockquote
+    p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.6em;
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    blockquote
+    p:first-child:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    pre:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    border: 1px solid var(--lesson-border);
+    border-radius: var(--radius-base);
+    background: var(--lesson-soft-bg);
+    padding: var(--padding-lg);
+    font-size: 0.92em;
+    line-height: 1.6;
+    overflow: auto;
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    pre
+    code:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    @apply font-mono;
+    font-size: 1em;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    white-space: pre;
+    color: var(--color-foreground);
+  }
+
+  /* Don’t let long tables break layout */
+  :is(.lesson-prose, .lesson-content)
+    table:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    display: table;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+    color: var(--color-foreground);
+    border: 1px solid var(--lesson-border);
+    border-radius: var(--radius-base);
+    background: color-mix(in oklab, var(--color-background) 96%, var(--color-foreground) 4%);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    thead:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    background: var(--lesson-soft-bg-2);
+  }
+
+  :is(.lesson-prose, .lesson-content) th:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-weight: 700;
+    border-bottom-color: var(--lesson-border-strong);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    :is(th, td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    border-color: var(--lesson-border);
+    padding: var(--padding-sm);
+    color: var(--color-foreground);
+  }
+
+  :is(.lesson-prose, .lesson-content)
+    tbody
+    tr:nth-child(even):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    background: color-mix(in oklab, var(--color-foreground) 3.25%, transparent);
+  }
+
+  /* Horizontal rule */
+  :is(.lesson-prose, .lesson-content) hr:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    border-color: var(--lesson-border);
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  /* Bottom lesson navigation */
+  .lesson-bottom-nav {
+    margin: 4rem auto 0;
+    width: min(100%, 78rem);
+    padding: 3rem 1rem 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+    border-top: 1px solid var(--lesson-border);
+  }
+
+  @media (min-width: 640px) {
+    .lesson-bottom-nav {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .lesson-bottom-nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  .lesson-nav-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 1rem 1.15rem;
+    border-radius: 18px;
+    border: 1px solid var(--lesson-border);
+    background: color-mix(in oklab, var(--color-background) 90%, var(--color-foreground) 10%);
+    text-decoration: none;
+    color: var(--color-foreground);
+    box-shadow: 0 10px 28px color-mix(in oklab, var(--color-foreground) 10%, transparent);
+    transition:
+      border-color 140ms ease,
+      box-shadow 140ms ease,
+      transform 140ms ease,
+      background-color 140ms ease,
+      color 140ms ease;
+    overflow: hidden;
+  }
+
+  .lesson-nav-card--next {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .lesson-nav-card:hover {
+    border-color: var(--lesson-border-strong);
+    background: color-mix(in oklab, var(--color-background) 84%, var(--color-foreground) 16%);
+    transform: translateY(-1.5px);
+    box-shadow: 0 14px 32px color-mix(in oklab, var(--color-foreground) 14%, transparent);
+  }
+
+  .lesson-nav-card:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-foreground) 55%, transparent);
+    outline-offset: 3px;
+  }
+
+  .lesson-nav-direction {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .lesson-nav-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.05rem, 0.3vw + 1rem, 1.18rem);
+    line-height: 1.35;
+  }
+
+  .lesson-nav-spacer {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .lesson-nav-spacer {
+      display: block;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .lesson-nav-card {
+      background: color-mix(in oklab, var(--color-surface) 88%, var(--color-foreground) 12%);
+      border-color: color-mix(in oklab, var(--lesson-border) 72%, #000 28%);
+      box-shadow: 0 10px 28px color-mix(in oklab, #000 55%, transparent);
+    }
+
+    .lesson-nav-card:hover {
+      background: color-mix(in oklab, var(--color-surface) 80%, var(--color-foreground) 20%);
+      box-shadow: 0 14px 32px color-mix(in oklab, #000 65%, transparent);
+    }
+  }
+}

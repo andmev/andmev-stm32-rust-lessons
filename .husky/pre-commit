@@ -1,0 +1,16 @@
+#!/bin/sh
+# Pre-commit hook - runs same quality checks as GitHub Actions
+
+echo "🔍 Running linter..."
+npm run lint || exit 1
+
+echo "✨ Checking code formatting..."
+npm run format:check || exit 1
+
+echo "🔎 Running TypeScript type check..."
+npx tsc --noEmit || exit 1
+
+echo "🧪 Running tests..."
+npm run test:run || exit 1
+
+echo "✅ All quality checks passed!"

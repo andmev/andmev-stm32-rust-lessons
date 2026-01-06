@@ -1,4 +1,4 @@
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import { DEFAULT_LANGUAGE, LANGUAGE_DISPLAY_NAMES } from '@/constants';
 
 /**
@@ -28,7 +28,7 @@ export async function getAvailableLanguages(): Promise<string[]> {
   // Extract unique language codes from lesson IDs (e.g., "en/lessons/getting-started" -> "en")
   const languages = new Set<string>();
 
-  lessons.forEach((lesson) => {
+  lessons.forEach((lesson: CollectionEntry<'lessons'>) => {
     const lang = lesson.id.split('/')[0];
     if (lang) {
       languages.add(lang);

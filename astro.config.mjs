@@ -28,23 +28,23 @@ export default defineConfig({
   base: isGitHubPages ? '/andmev-stm32-rust-lessons' : '/',
   prefetch: true,
 
-  // Enable Content Security Policy with hash-based approach (no unsafe-inline)
-  experimental: {
-    csp: {
-      algorithm: 'SHA-256',
-      styleDirective: {
-        resources: ["'self'", 'https://fonts.googleapis.com'],
-      },
-      scriptDirective: {
-        resources: ["'self'"],
-      },
-      directives: [
-        "font-src 'self' https://fonts.gstatic.com",
-        "img-src 'self' data:",
-        "default-src 'self'",
-      ],
-    },
-  },
+  // CSP disabled - was causing issues with dynamic parallax styles
+  // experimental: {
+  //   csp: {
+  //     algorithm: 'SHA-256',
+  //     styleDirective: {
+  //       resources: ["'self'", "'unsafe-hashes'", 'https://fonts.googleapis.com'],
+  //     },
+  //     scriptDirective: {
+  //       resources: ["'self'"],
+  //     },
+  //     directives: [
+  //       "font-src 'self' https://fonts.gstatic.com",
+  //       "img-src 'self' data:",
+  //       "default-src 'self'",
+  //     ],
+  //   },
+  // },
   vite: {
     plugins: [
       // @ts-expect-error - Vite plugin type mismatch between Astro's bundled Vite and external plugins

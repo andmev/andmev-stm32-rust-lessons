@@ -6,7 +6,8 @@
       "@/*": ["src/*"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "jsxImportSource": "preact",
+    "types": ["vitest/globals"]
   },
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist"]

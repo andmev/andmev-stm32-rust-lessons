@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { DEFAULT_LANGUAGE, LANGUAGE_DISPLAY_NAMES } from '@/constants';
+import { DEFAULT_LANGUAGE, LANGUAGE_DISPLAY_NAMES, SUPPORTED_LANGUAGES } from '@/constants';
+import { validateLanguage } from '@/utils/validators';
 
 /**
  * Re-export language names for backward compatibility
@@ -31,17 +32,24 @@ export async function getAvailableLanguages(): Promise<string[]> {
   lessons.forEach((lesson: CollectionEntry<'lessons'>) => {
     const lang = lesson.id.split('/')[0];
     if (lang) {
+      // Validate against supported languages
+      if (!validateLanguage(lang)) {
+        console.warn(
+          `[getAvailableLanguages] Unsupported language detected: ${lang}. Supported languages: ${SUPPORTED_LANGUAGES.join(', ')}`
+        );
+      }
       languages.add(lang);
     }
   });
 
-  const sortedLanguages = Array.from(languages).sort();
+  const sortedLanguages = Array.from(languages).sort((a, b) => a.localeCompare(b));
 
-  // Error handling: if no languages detected, warn and return fallback
+  // Error handling: if no languages detected, log error and return fallback
   if (sortedLanguages.length === 0) {
-    if (import.meta.env.DEV) {
-      console.warn('No languages detected in content collections, falling back to default');
-    }
+    // Always log critical errors, even in production
+    console.error(
+      '[getAvailableLanguages] No languages detected in content collections, falling back to default'
+    );
     cachedLanguages = [DEFAULT_LANGUAGE];
     return cachedLanguages;
   }
@@ -90,7 +98,7 @@ export async function getDefaultLanguage(acceptLanguageHeader?: string | null): 
         const [code, q] = lang.split(';');
         return {
           code: code.trim(),
-          quality: q ? parseFloat(q.split('=')[1]) : 1.0,
+          quality: q ? Number.parseFloat(q.split('=')[1]) : 1,
         };
       })
       .sort((a, b) => b.quality - a.quality); // Sort by quality desc

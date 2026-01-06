@@ -42,6 +42,9 @@ const articleSchema = {
 };
 
 const schema = type === 'article' ? articleSchema : websiteSchema;
+
+// Sanitize JSON to prevent XSS by escaping < and > characters
+const sanitizedSchema = JSON.stringify(schema).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+<script type="application/ld+json" set:html={sanitizedSchema} />

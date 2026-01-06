@@ -3,35 +3,61 @@
 
 version: 2
 updates:
-  # Enable version updates for npm
+  # Maintain npm dependencies
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
       day: 'monday'
+      time: '09:00'
+    # Automatically merge minor and patch updates for dev dependencies
+    # Human review for major updates and production dependencies
     open-pull-requests-limit: 10
-    # Group all minor and patch updates into a single PR
+    # Group dependency updates to reduce noise
     groups:
-      development-dependencies:
-        dependency-type: 'development'
-        update-types:
-          - 'minor'
-          - 'patch'
-      production-dependencies:
-        dependency-type: 'production'
-        update-types:
-          - 'minor'
-          - 'patch'
-    # Automatically approve and merge patch updates for known safe packages
+      astro:
+        patterns:
+          - 'astro'
+          - '@astrojs/*'
+      tailwind:
+        patterns:
+          - 'tailwindcss'
+          - '@tailwindcss/*'
+      testing:
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
+          - 'playwright'
+          - '@playwright/*'
+      eslint:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - '@typescript-eslint/*'
+      prettier:
+        patterns:
+          - 'prettier'
+          - 'prettier-plugin-*'
+    # Add labels for easier filtering
     labels:
       - 'dependencies'
       - 'automated'
+    # Commit message prefix
+    commit-message:
+      prefix: 'chore'
+      prefix-development: 'chore'
+      include: 'scope'
 
-  # Enable security updates for GitHub Actions
+  # Maintain GitHub Actions
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
     labels:
       - 'github-actions'
       - 'dependencies'
+    commit-message:
+      prefix: 'ci'
+      include: 'scope'

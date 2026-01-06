@@ -13,4 +13,7 @@ npx tsc --noEmit || exit 1
 echo "🧪 Running tests..."
 npm run test:run || exit 1
 
+echo "🔒 Checking for security vulnerabilities..."
+npm audit --audit-level=high || exit 1
+
 echo "✅ All quality checks passed!"

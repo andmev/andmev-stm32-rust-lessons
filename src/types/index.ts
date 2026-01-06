@@ -1,22 +1,7 @@
-export interface SEOMetadata {
-  ogTitle?: string;
-  ogDescription?: string;
-  ogImage?: string;
-  ogType?: 'website' | 'article';
-  twitterCard?: 'summary' | 'summary_large_image';
-  canonicalUrl?: string;
-}
+/**
+ * Central exports for all type definitions
+ * Use this file to import types across the application
+ */
 
-export interface BaseLayoutProps extends SEOMetadata {
-  lang: string;
-  title: string;
-  description?: string;
-}
-
-export interface LessonCardProps {
-  number: number;
-  label?: string;
-  title: string;
-  description: string;
-  href: string;
-}
+export type { Lesson, Page, LessonWithSlug, LessonMetadata, PageMetadata } from './content';
+export type { NavigationLink, LessonNavigation, FooterNavItem, LanguageItem } from './navigation';

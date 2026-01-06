@@ -1,3 +1,17 @@
+import type { Language } from '@/constants';
+
+/**
+ * Options for building URLs with language and path
+ */
+export interface UrlOptions {
+  /** Language code for the URL */
+  lang: Language;
+  /** Optional path segment (e.g., 'about', 'lessons/intro') */
+  path?: string;
+  /** Whether to include trailing slash (default: true) */
+  trailing?: boolean;
+}
+
 /**
  * Prepends the configured base URL to a given path
  * Handles both root deployments and subdirectory deployments (e.g., GitHub Pages)
@@ -13,6 +27,28 @@
 export function withBase(path: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   return `${base}${path}`;
+}
+
+/**
+ * Unified URL builder with options pattern
+ * Constructs URLs with language prefix, optional path, and configurable trailing slash
+ * @param options - URL building options
+ * @returns Complete URL with base path, language, and optional path segment
+ * @example
+ * // Language home page
+ * buildUrl({ lang: 'en' }) // returns "/en/"
+ *
+ * // Lesson page
+ * buildUrl({ lang: 'en', path: 'getting-started' }) // returns "/en/getting-started/"
+ *
+ * // Without trailing slash
+ * buildUrl({ lang: 'es', path: 'about', trailing: false }) // returns "/es/about"
+ */
+export function buildUrl({ lang, path = '', trailing = true }: UrlOptions): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const pathSegment = path ? `/${path}` : '';
+  const url = `${base}/${lang}${pathSegment}`;
+  return trailing ? `${url}/` : url;
 }
 
 /**

@@ -18,13 +18,20 @@
   href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap"
 />
 
-<!-- Load all fonts -->
+<!-- Load all fonts with async loading (CSP-compliant) -->
 <link
+  id="google-fonts"
   href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@400;700&family=PT+Sans+Narrow:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
   rel="stylesheet"
   media="print"
-  onload="this.media='all'"
 />
+<script>
+  // Load fonts asynchronously without inline event handlers (CSP-compliant)
+  const fontLink = document.getElementById('google-fonts');
+  if (fontLink) {
+    fontLink.media = 'all';
+  }
+</script>
 <noscript>
   <link
     href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@400;700&family=PT+Sans+Narrow:wght@400;700&family=PT+Sans:wght@400;700&display=swap"

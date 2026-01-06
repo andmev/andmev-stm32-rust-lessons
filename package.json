@@ -10,6 +10,9 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit",
+    "analyze": "ANALYZE=true npm run build",
     "lint": "eslint . --ext .js,.ts,.astro",
     "lint:fix": "eslint . --ext .js,.ts,.astro --fix",
     "format": "prettier --write .",
@@ -34,6 +37,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "8.52.0",
     "@typescript-eslint/parser": "8.52.0",
+    "@vitest/coverage-v8": "^4.0.16",
     "@vitest/ui": "^4.0.16",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
@@ -43,7 +47,7 @@
     "prettier": "3.7.4",
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "vite": "7.3.0",
+    "rollup-plugin-visualizer": "^6.0.5",
     "vitest": "^4.0.16"
   }
 }

@@ -1,4 +1,5 @@
 import { Component, type ComponentChildren } from 'preact';
+import styles from './ErrorBoundary.module.css';
 
 interface Props {
   children: ComponentChildren;
@@ -45,20 +46,9 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div
-          role="alert"
-          style={{
-            padding: '1rem',
-            border: '1px solid #ef4444',
-            borderRadius: '0.375rem',
-            backgroundColor: '#fef2f2',
-            color: '#991b1b',
-          }}
-        >
-          <p style={{ margin: 0, fontWeight: 'bold' }}>Something went wrong</p>
-          <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}>
-            Please refresh the page to try again.
-          </p>
+        <div role="alert" className={styles.errorContainer}>
+          <p className={styles.errorTitle}>Something went wrong</p>
+          <p className={styles.errorMessage}>Please refresh the page to try again.</p>
         </div>
       );
     }

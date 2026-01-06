@@ -1,0 +1,58 @@
+---
+import LanguagePickerIsland from '@/components/LanguagePickerIsland';
+import { LANGUAGE_NAMES } from '@/utils/languages';
+import { withBase } from '@/utils/url';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  lang: string;
+  pages: CollectionEntry<'pages'>[];
+  availableLanguages: string[];
+  currentPath: string;
+  basePath: string;
+}
+
+const { lang, pages, availableLanguages, currentPath, basePath } = Astro.props;
+---
+
+<footer class="mt-16 border-t border-foreground/10">
+  <div class="mx-auto w-full max-w-[68rem] px-4 py-10 sm:px-6">
+    <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted">
+        {
+          pages.map((page) => {
+            const href = withBase(`/${lang}${page.data.url ? '/' + page.data.url : '/'}`);
+            const isActive =
+              currentPath === href ||
+              currentPath === href.replace(/\/$/, '') ||
+              currentPath.replace(/\/$/, '') === href.replace(/\/$/, '');
+
+            return isActive ? (
+              <span class="text-foreground">{page.data.name}</span>
+            ) : (
+              <a class="transition hover:text-foreground" href={href}>
+                {page.data.name}
+              </a>
+            );
+          })
+        }
+      </nav>
+
+      <div class="self-start sm:self-auto">
+        <LanguagePickerIsland
+          client:idle
+          transition:persist
+          currentLang={lang}
+          availableLanguages={availableLanguages}
+          languageNames={LANGUAGE_NAMES}
+          currentPath={currentPath}
+          basePath={basePath}
+        />
+      </div>
+    </div>
+
+    <p class="mt-8 text-sm text-muted">
+      &copy; {new Date().getFullYear()} STM32 Rust Lessons
+    </p>
+  </div>
+</footer>

@@ -8,6 +8,53 @@ interface Props {
   basePath?: string;
 }
 
+/**
+ * Builds a safe language-switching URL with path traversal prevention
+ * Takes the current page path, extracts the language prefix, and replaces it with the target language
+ * while preserving the rest of the path structure
+ *
+ * @param currentPath - The current page path (e.g., "/en/getting-started/" or "/base/es/about/")
+ * @param lang - The target language code to switch to
+ * @param basePath - The site's base path (empty for root, "/my-site" for subdirectory)
+ * @param validLangs - Array of valid language codes for validation
+ * @returns The new URL with the target language prefix
+ *
+ * @example
+ * // Without base path
+ * buildLanguageUrl('/en/about/', 'es', '', ['en', 'es']) // returns "/es/about/"
+ *
+ * @example
+ * // With base path
+ * buildLanguageUrl('/base/en/lesson/', 'uk', '/base', ['en', 'uk']) // returns "/base/uk/lesson/"
+ */
+function buildLanguageUrl(
+  currentPath: string,
+  lang: string,
+  basePath: string,
+  validLangs: string[]
+): string {
+  // Sanitize inputs - remove path traversal attempts
+  const safePath = currentPath.replace(/\.\./g, '').replace(/\/+/g, '/');
+  const normalizedBase = basePath.replace(/\/$/, '');
+
+  // Extract path without base
+  const pathWithoutBase =
+    normalizedBase && safePath.startsWith(normalizedBase)
+      ? safePath.slice(normalizedBase.length)
+      : safePath;
+
+  // More robust language removal using segment parsing
+  const pathSegments = pathWithoutBase.split('/').filter(Boolean);
+  const [firstSegment, ...restSegments] = pathSegments;
+
+  // Validate first segment is a known language code
+  const pathWithoutLang = validLangs.includes(firstSegment)
+    ? '/' + restSegments.join('/')
+    : pathWithoutBase;
+
+  return `${normalizedBase}/${lang}${pathWithoutLang}`.replace(/\/+/g, '/');
+}
+
 export default function LanguagePickerIsland({
   currentLang,
   availableLanguages,
@@ -87,12 +134,7 @@ export default function LanguagePickerIsland({
             {availableLanguages.map((code) => {
               const displayName = languageNames[code] || code.toUpperCase();
               const isCurrent = code === currentLang;
-              const normalizedBase = basePath.replace(/\/$/, '');
-              const pathWithoutBase = normalizedBase && currentPath.startsWith(normalizedBase)
-                ? currentPath.slice(normalizedBase.length)
-                : currentPath;
-              const pathWithoutLang = pathWithoutBase.replace(/^\/[a-z]{2}/, '');
-              const target = `${normalizedBase}/${code}${pathWithoutLang}`.replace(/\/{2,}/g, '/');
+              const target = buildLanguageUrl(currentPath, code, basePath, availableLanguages);
               return (
                 <a
                   key={code}

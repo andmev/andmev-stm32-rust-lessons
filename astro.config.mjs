@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypePrettyCode from 'rehype-pretty-code';
@@ -57,5 +58,6 @@ export default defineConfig({
       gfm: true,
     }),
     preact(),
+    sitemap(),
   ],
 });

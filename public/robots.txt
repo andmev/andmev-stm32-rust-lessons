@@ -1,4 +1,6 @@
+# Allow all search engines to crawl the site
 User-agent: *
 Allow: /
 
-Sitemap: https://yourdomain.com/sitemap.xml
+# Sitemap location
+Sitemap: https://andmev.github.io/andmev-stm32-rust-lessons/sitemap-index.xml

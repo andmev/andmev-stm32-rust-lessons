@@ -1,0 +1,61 @@
+---
+import StructuredData from '@/components/StructuredData.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  twitterCard?: 'summary' | 'summary_large_image';
+  canonicalUrl?: string;
+  site: string;
+  currentUrl: URL;
+}
+
+const {
+  title,
+  description,
+  lang,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogType = 'website',
+  twitterCard = 'summary_large_image',
+  canonicalUrl,
+  site,
+  currentUrl,
+} = Astro.props;
+
+const canonical = canonicalUrl || new URL(currentUrl.pathname, site).href;
+const socialImage = ogImage || new URL('/favicon.svg', site).href;
+---
+
+<!-- SEO & Open Graph -->
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:title" content={ogTitle || title} />
+<meta property="og:description" content={ogDescription || description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={socialImage} />
+<meta property="og:type" content={ogType} />
+<meta property="og:locale" content={lang} />
+
+<meta name="twitter:card" content={twitterCard} />
+<meta name="twitter:title" content={ogTitle || title} />
+<meta name="twitter:description" content={ogDescription || description} />
+<meta name="twitter:image" content={socialImage} />
+
+<!-- Structured Data -->
+<StructuredData
+  type={ogType}
+  title={title}
+  description={description}
+  url={canonical}
+  image={socialImage}
+  lang={lang}
+/>

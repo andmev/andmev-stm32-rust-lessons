@@ -1,22 +1,28 @@
 import { getCollection } from 'astro:content';
+import { DEFAULT_LANGUAGE, LANGUAGE_DISPLAY_NAMES } from '@/constants';
 
 /**
- * Language display names mapping
+ * Re-export language names for backward compatibility
  */
-export const LANGUAGE_NAMES: Record<string, string> = {
-  en: 'English',
-  es: 'Español',
-  uk: 'Українська',
-  fr: 'Français',
-  de: 'Deutsch',
-};
+export const LANGUAGE_NAMES = LANGUAGE_DISPLAY_NAMES;
+
+/**
+ * Cache for available languages to avoid repeated collection scans
+ */
+let cachedLanguages: string[] | null = null;
 
 /**
  * Auto-detect available languages from content directory structure
  * Languages are detected from top-level directories in src/content/
+ * Results are cached to improve performance during build
  * @returns Array of available language codes
  */
 export async function getAvailableLanguages(): Promise<string[]> {
+  // Return cached result if available
+  if (cachedLanguages !== null) {
+    return cachedLanguages;
+  }
+
   const lessons = await getCollection('lessons');
 
   // Extract unique language codes from lesson IDs (e.g., "en/lessons/getting-started" -> "en")
@@ -29,14 +35,41 @@ export async function getAvailableLanguages(): Promise<string[]> {
     }
   });
 
-  return Array.from(languages).sort();
+  const sortedLanguages = Array.from(languages).sort();
+
+  // Error handling: if no languages detected, warn and return fallback
+  if (sortedLanguages.length === 0) {
+    if (import.meta.env.DEV) {
+      console.warn('No languages detected in content collections, falling back to default');
+    }
+    cachedLanguages = [DEFAULT_LANGUAGE];
+    return cachedLanguages;
+  }
+
+  // Cache the result
+  cachedLanguages = sortedLanguages;
+  return cachedLanguages;
 }
 
 /**
- * Get the default language
- * Tries to detect browser language, checks availability, and falls back to 'en'
- * This function works in both client and server contexts (via optional Accept-Language header)
- * @param acceptLanguageHeader - Optional Accept-Language header string (for server-side)
+ * Detects the user's preferred language from browser or Accept-Language header
+ * Tries multiple detection methods in order of priority:
+ * 1. Server-side: Parse Accept-Language header with quality values
+ * 2. Client-side: Check navigator.languages array
+ * 3. Client-side fallback: Check navigator.language
+ * 4. Ultimate fallback: Return 'en'
+ *
+ * Only returns languages that are actually available in the content collections
+ *
+ * @param acceptLanguageHeader - Optional Accept-Language header for server-side detection
+ *   Format: "en-US,en;q=0.9,es;q=0.8" (standard HTTP Accept-Language)
+ * @returns Promise resolving to a supported language code (e.g., 'en', 'es')
+ * @example
+ * // Server-side with header
+ * await getDefaultLanguage('es-ES,es;q=0.9,en;q=0.8') // returns 'es' if available
+ *
+ * // Client-side (no parameter)
+ * await getDefaultLanguage() // returns language from navigator.languages or 'en'
  */
 export async function getDefaultLanguage(acceptLanguageHeader?: string | null): Promise<string> {
   const availableLanguages = await getAvailableLanguages();

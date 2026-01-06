@@ -1,9 +1,6 @@
 ---
-import LessonCard from '@/components/LessonCard.tsx';
-import HomeLayoutDecor from '@/components/HomeLayoutDecor.astro';
-import BaseLayout from '@/layouts/BaseLayout.astro';
+import HomeTemplate from '@/components/HomeTemplate.astro';
 import { getAvailableLanguages } from '@/utils/languages';
-import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const languages = await getAvailableLanguages();
@@ -12,77 +9,14 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 
-// Load home page content from MDX (now at content/en/home.mdx instead of content/pages/en/home.mdx)
-const homeContent = await getEntry('pages', `${lang}/home`);
-if (!homeContent) {
-  throw new Error(`Home page content not found for language: ${lang}`);
-}
-
-const { Content } = await render(homeContent);
-
-const allLessons = await getCollection('lessons');
-// Filter lessons by language (lessons are now at content/en/lessons/*.mdx)
-const filteredLessons = allLessons.filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`));
-const sortedLessons = filteredLessons.sort((a, b) => a.data.order - b.data.order);
-
 const lessonLabelByLang: Record<string, string> = {
   en: 'Lesson',
   es: 'Lección',
+  uk: 'Урок',
+  fr: 'Leçon',
+  de: 'Lektion',
 };
 const lessonLabel = lessonLabelByLang[lang] ?? 'Lesson';
-
-const withBase = (path: string) =>
-  `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
 ---
 
-<BaseLayout
-  lang={lang}
-  title={homeContent.data.title}
-  description={homeContent.data.description}
-  ogTitle={homeContent.data.ogTitle}
-  ogDescription={homeContent.data.ogDescription}
-  ogImage={homeContent.data.ogImage}
-  ogType={homeContent.data.ogType}
-  twitterCard={homeContent.data.twitterCard}
-  canonicalUrl={homeContent.data.canonicalUrl}
->
-  <div class="home-layout-root mx-auto w-full max-w-[68rem] px-4 pb-20 pt-16 sm:px-6 md:pb-28 md:pt-24">
-    <HomeLayoutDecor />
-
-    <div class="home-layout-content">
-      <header class="home-hero mx-auto max-w-[42rem] text-center">
-        <div
-          class="flex flex-col items-center gap-4 text-center md:gap-6 [&>h2]:font-serif [&>h2]:uppercase [&>h2]:tracking-[0.18em] [&>h2]:text-muted [&>h2]:leading-[1.1] [&>h2]:[font-size:clamp(1.125rem,1.1vw+0.65rem,2.5rem)] [&>h1]:font-serif [&>h1]:tracking-[-0.02em] [&>h1]:leading-[1.02] [&>h1]:[text-wrap:balance] [&>h1]:[font-size:clamp(3.25rem,5.6vw+1rem,6rem)] [&>h1]:[margin-top:-0.2em]"
-        >
-          <Content />
-          <p class="mx-auto max-w-[38rem] font-sans-narrow text-muted [font-size:clamp(1.06rem,0.55vw+0.96rem,1.55rem)] leading-[1.65]">
-            {homeContent.data.description}
-          </p>
-        </div>
-      </header>
-
-      <section class="mt-14 md:mt-18">
-        <div class="grid gap-7 md:grid-cols-2 md:gap-10">
-          {
-            sortedLessons.map((lesson, index) => {
-              const slug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
-              const lessonUrl = lesson.data.url ? lesson.data.url : slug;
-
-              return (
-                <LessonCard
-                  number={index + 1}
-                  label={lessonLabel}
-                  title={lesson.data.title}
-                  description={lesson.data.description}
-                  category={lesson.data.category}
-                  href={withBase(`/${lang}/${lessonUrl}/`)}
-                  client:visible
-                />
-              );
-            })
-          }
-        </div>
-      </section>
-    </div>
-  </div>
-</BaseLayout>
+<HomeTemplate lang={lang} lessonLabel={lessonLabel} />

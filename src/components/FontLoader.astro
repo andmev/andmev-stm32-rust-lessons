@@ -1,0 +1,33 @@
+---
+// Font loading component with preconnect and preload for performance
+---
+
+<!-- Google Fonts - Preconnect for performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<!-- Preload critical fonts -->
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap"
+/>
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap"
+/>
+
+<!-- Load all fonts -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@400;700&family=PT+Sans+Narrow:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+  rel="stylesheet"
+  media="print"
+  onload="this.media='all'"
+/>
+<noscript>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@400;700&family=PT+Sans+Narrow:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+</noscript>

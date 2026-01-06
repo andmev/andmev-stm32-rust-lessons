@@ -4,7 +4,7 @@ import FontLoader from '@/components/FontLoader.astro';
 import FooterNav from '@/components/FooterNav.astro';
 import { getAvailableLanguages } from '@/utils/languages';
 import { withBase } from '@/utils/url';
-import { getCollection } from 'astro:content';
+import { getPages } from '@/utils/collections';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
@@ -33,9 +33,9 @@ const {
 
 const availableLanguages = await getAvailableLanguages();
 
-const pages = (await getCollection('pages', ({ id }) => id.startsWith(`${lang}/`))).sort(
-  (a, b) => a.data.order - b.data.order
-);
+const pages = (await getPages())
+  .filter(({ id }) => id.startsWith(`${lang}/`))
+  .sort((a, b) => a.data.order - b.data.order);
 
 const site = Astro.site ? Astro.site.href : Astro.url.origin;
 ---

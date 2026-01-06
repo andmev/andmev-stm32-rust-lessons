@@ -1,7 +1,7 @@
 ---
 import LanguagePickerIsland from '@/components/LanguagePickerIsland';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { LANGUAGE_NAMES } from '@/utils/languages';
+import { LANGUAGE_DISPLAY_NAMES } from '@/constants';
 import { withBase } from '@/utils/url';
 import type { CollectionEntry } from 'astro:content';
 
@@ -50,7 +50,7 @@ const { lang, pages, availableLanguages, currentPath, basePath } = Astro.props;
             transition:persist
             currentLang={lang}
             availableLanguages={availableLanguages}
-            languageNames={LANGUAGE_NAMES}
+            languageNames={LANGUAGE_DISPLAY_NAMES}
             currentPath={currentPath}
             basePath={basePath}
           />

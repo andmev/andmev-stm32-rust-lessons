@@ -3,19 +3,14 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getAvailableLanguages } from '@/utils/languages';
 import { withBase } from '@/utils/url';
 import { validateLanguage } from '@/utils/validators';
-import { getCollection, render } from 'astro:content';
+import { getLessons } from '@/utils/collections';
+import { render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const lessons = await getCollection('lessons');
+  const lessons = await getLessons();
   const languages = await getAvailableLanguages();
 
   return languages.flatMap((lang) => {
-    // Validate lang is in available languages (should always pass, but defensive)
-    if (!languages.includes(lang)) {
-      console.error(`[getStaticPaths] Invalid language code: ${lang}`);
-      return [];
-    }
-
     // Lessons are now at content/en/lessons/*.mdx
     const langLessons = lessons
       .filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`))

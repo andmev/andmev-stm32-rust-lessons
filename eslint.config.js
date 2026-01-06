@@ -57,7 +57,7 @@ export default [
     },
     rules: {
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      'no-console': ['error', { allow: ['warn', 'error'] }],
+      'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     },
   },
 ];

@@ -1,5 +1,18 @@
 /**
- * Error severity levels
+ * Error Tracking Utility
+ *
+ * This module provides a centralized interface for error reporting and logging.
+ * It integrates with Sentry when configured (via sentry.client.config.js).
+ *
+ * Sentry is initialized in sentry.client.config.js with GDPR-compliant settings.
+ * This module provides convenience functions for reporting errors with context.
+ */
+
+import * as Sentry from '@sentry/astro';
+
+/**
+ * Error severity levels matching Sentry's severity levels
+ * @see https://docs.sentry.io/platforms/javascript/enriching-events/scopes/#severity
  */
 export enum ErrorSeverity {
   DEBUG = 'debug',
@@ -10,95 +23,47 @@ export enum ErrorSeverity {
 }
 
 /**
- * Error tracking configuration
- * Set SENTRY_DSN environment variable to enable Sentry integration
- */
-const SENTRY_DSN = import.meta.env.PUBLIC_SENTRY_DSN;
-const ENABLE_SENTRY = import.meta.env.PROD && SENTRY_DSN;
-
-/**
- * Initialize Sentry if configured
- * To enable Sentry:
- * 1. Sign up at https://sentry.io
- * 2. Create a new project
- * 3. Set PUBLIC_SENTRY_DSN environment variable with your DSN
- * 4. Install @sentry/browser: npm install @sentry/browser
- * 5. Uncomment the Sentry.init() call below
- */
-async function initializeSentry() {
-  if (!ENABLE_SENTRY) return;
-
-  try {
-    // Uncomment when ready to use Sentry:
-    // const Sentry = await import('@sentry/browser');
-    // Sentry.init({
-    //   dsn: SENTRY_DSN,
-    //   environment: import.meta.env.MODE,
-    //   tracesSampleRate: 1.0,
-    // });
-  } catch (err) {
-    console.warn('Failed to initialize Sentry:', err);
-  }
-}
-
-// Initialize Sentry on module load
-if (typeof window !== 'undefined') {
-  initializeSentry();
-}
-
-/**
  * Centralized error reporting utility
- * Handles error logging based on environment and sends to Sentry if configured
+ *
+ * Reports errors to Sentry (if configured) and logs them to console.
+ * Automatically captures stack traces and additional context.
  *
  * @param error - The error to report
- * @param context - Context describing where the error occurred
+ * @param context - Context describing where the error occurred (used as tag)
  * @param severity - Error severity level (default: ERROR)
  * @param extras - Additional context data to include with the error
  *
  * @example
+ * ```typescript
  * try {
  *   await fetchData();
  * } catch (error) {
- *   reportError(error as Error, 'FetchData', ErrorSeverity.ERROR, { userId: '123' });
+ *   reportError(error as Error, 'DataFetch', ErrorSeverity.ERROR, {
+ *     endpoint: '/api/data',
+ *     userId: '123'
+ *   });
  * }
+ * ```
  */
 export function reportError(
   error: Error,
   context: string,
   severity: ErrorSeverity = ErrorSeverity.ERROR,
   extras?: Record<string, unknown>
-) {
-  // Create structured error object
-  const errorData = {
-    message: error.message,
-    stack: error.stack,
-    context,
-    severity,
-    timestamp: new Date().toISOString(),
-    ...extras,
-  };
-
-  if (import.meta.env.PROD) {
-    // In production, send to error tracking service
-    if (ENABLE_SENTRY) {
-      // Uncomment when Sentry is installed:
-      // import('@sentry/browser').then((Sentry) => {
-      //   Sentry.captureException(error, {
-      //     level: severity,
-      //     tags: { context },
-      //     extra: extras,
-      //   });
-      // });
-    }
-
-    // Log sanitized error message (without sensitive data)
-    console.error(`[${severity.toUpperCase()}] ${context}: An error occurred`, {
-      message: error.message,
-      timestamp: errorData.timestamp,
+): void {
+  // Report to Sentry if configured
+  if (import.meta.env.PUBLIC_SENTRY_DSN) {
+    Sentry.captureException(error, {
+      level: severity as Sentry.SeverityLevel,
+      tags: { context },
+      extra: extras,
     });
+  }
 
-    // Could also send to custom logging endpoint:
-    // sendToLoggingEndpoint(errorData);
+  // Log to console based on environment
+  if (import.meta.env.PROD) {
+    // In production, log sanitized error message (Sentry has the full details)
+    console.error(`[${severity.toUpperCase()}] ${context}: ${error.message}`);
   } else {
     // In development, log full error details with stack trace
     console.error(`[${severity.toUpperCase()}] [${context}]`, error, extras);
@@ -107,8 +72,23 @@ export function reportError(
 
 /**
  * Report a handled warning (non-fatal error)
+ *
+ * @param message - Warning message
+ * @param context - Context describing where the warning occurred
+ * @param extras - Additional context data
+ *
+ * @example
+ * ```typescript
+ * reportWarning('API rate limit approaching', 'APIClient', {
+ *   remainingRequests: 5
+ * });
+ * ```
  */
-export function reportWarning(message: string, context: string, extras?: Record<string, unknown>) {
+export function reportWarning(
+  message: string,
+  context: string,
+  extras?: Record<string, unknown>
+): void {
   const error = new Error(message);
   error.name = 'Warning';
   reportError(error, context, ErrorSeverity.WARNING, extras);
@@ -116,9 +96,69 @@ export function reportWarning(message: string, context: string, extras?: Record<
 
 /**
  * Report an info-level event
+ *
+ * Use this for non-error events that you want to track in Sentry,
+ * such as important user actions or system state changes.
+ *
+ * @param message - Info message
+ * @param context - Context describing the event
+ * @param extras - Additional context data
+ *
+ * @example
+ * ```typescript
+ * reportInfo('User completed onboarding', 'Onboarding', {
+ *   userId: '123',
+ *   stepsCompleted: 5
+ * });
+ * ```
  */
-export function reportInfo(message: string, context: string, extras?: Record<string, unknown>) {
+export function reportInfo(
+  message: string,
+  context: string,
+  extras?: Record<string, unknown>
+): void {
   const error = new Error(message);
   error.name = 'Info';
   reportError(error, context, ErrorSeverity.INFO, extras);
+}
+
+/**
+ * Manually add a breadcrumb for debugging context
+ *
+ * Breadcrumbs are automatically captured by Sentry, but you can manually add
+ * custom breadcrumbs for important application events.
+ *
+ * @param message - Breadcrumb message
+ * @param category - Category for filtering (e.g., 'navigation', 'api', 'user')
+ * @param level - Severity level
+ * @param data - Additional structured data
+ *
+ * @example
+ * ```typescript
+ * addBreadcrumb('User clicked checkout', 'user-action', ErrorSeverity.INFO, {
+ *   cartTotal: 99.99,
+ *   itemCount: 3
+ * });
+ * ```
+ */
+export function addBreadcrumb(
+  message: string,
+  category: string,
+  level: ErrorSeverity = ErrorSeverity.INFO,
+  data?: Record<string, unknown>
+): void {
+  if (import.meta.env.PUBLIC_SENTRY_DSN) {
+    Sentry.addBreadcrumb({
+      message,
+      category,
+      level: level as Sentry.SeverityLevel,
+      data,
+      timestamp: Date.now() / 1000,
+    });
+  }
+
+  // In development, also log to console
+  if (!import.meta.env.PROD) {
+    console.log(`[BREADCRUMB] [${category}] ${message}`, data);
+  }
 }

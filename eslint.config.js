@@ -6,7 +6,16 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 export default [
   // Ignore patterns
   {
-    ignores: ['dist/**', '.astro/**', 'node_modules/**', '*.config.js', '*.config.mjs'],
+    ignores: [
+      'dist/**',
+      '.astro/**',
+      'node_modules/**',
+      'coverage/**',
+      '*.config.js',
+      '*.config.mjs',
+      '*.config.ts',
+      'sentry.*.config.js',
+    ],
   },
 
   // TypeScript files

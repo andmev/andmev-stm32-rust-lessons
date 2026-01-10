@@ -3,52 +3,72 @@
 
 version: 2
 updates:
-  # Maintain npm dependencies
+  # npm dependencies
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
       interval: 'weekly'
       day: 'monday'
       time: '09:00'
-    # Automatically merge minor and patch updates for dev dependencies
-    # Human review for major updates and production dependencies
-    open-pull-requests-limit: 10
-    # Group dependency updates to reduce noise
+    # Limit the number of open pull requests
+    open-pull-requests-limit: 5
+    # Group updates by dependency type for easier review
     groups:
+      # Group all Astro-related packages together
       astro:
         patterns:
-          - 'astro'
           - '@astrojs/*'
-      tailwind:
+          - 'astro'
+      # Group all Sentry packages together
+      sentry:
         patterns:
-          - 'tailwindcss'
+          - '@sentry/*'
+      # Group all TailwindCSS packages together
+      tailwindcss:
+        patterns:
           - '@tailwindcss/*'
+          - 'tailwindcss'
+      # Group all testing-related packages together
       testing:
         patterns:
-          - 'vitest'
+          - '@testing-library/*'
           - '@vitest/*'
-          - 'playwright'
-          - '@playwright/*'
-      eslint:
+          - 'vitest'
+          - 'happy-dom'
+      # Group all ESLint and Prettier packages together
+      linting:
         patterns:
-          - 'eslint'
-          - 'eslint-*'
+          - 'eslint*'
+          - 'prettier*'
           - '@typescript-eslint/*'
-      prettier:
-        patterns:
-          - 'prettier'
-          - 'prettier-plugin-*'
-    # Add labels for easier filtering
+      # Group all other dev dependencies
+      dev-dependencies:
+        dependency-type: 'development'
+        exclude-patterns:
+          - '@astrojs/*'
+          - 'astro'
+          - '@sentry/*'
+          - '@tailwindcss/*'
+          - 'tailwindcss'
+          - '@testing-library/*'
+          - '@vitest/*'
+          - 'vitest'
+          - 'eslint*'
+          - 'prettier*'
+          - '@typescript-eslint/*'
+    # Increase the version requirement only when required
+    versioning-strategy: increase-if-necessary
+    # Add labels to PRs for easier filtering
     labels:
       - 'dependencies'
       - 'automated'
-    # Commit message prefix
+    # Customize commit message
     commit-message:
       prefix: 'chore'
       prefix-development: 'chore'
       include: 'scope'
 
-  # Maintain GitHub Actions
+  # GitHub Actions
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
@@ -56,8 +76,8 @@ updates:
       day: 'monday'
       time: '09:00'
     labels:
-      - 'github-actions'
       - 'dependencies'
+      - 'github-actions'
+      - 'automated'
     commit-message:
       prefix: 'ci'
-      include: 'scope'

@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/astro';
+import { createSentryBeforeSend } from './src/utils/sentry-config';
 
 Sentry.init({
   dsn: import.meta.env.PUBLIC_SENTRY_DSN,
@@ -16,57 +17,8 @@ Sentry.init({
   // Environment detection
   environment: import.meta.env.PROD ? 'production' : 'development',
 
-  // Scrub sensitive data before sending to Sentry
-  beforeSend(event, _hint) {
-    // Remove cookies from request data
-    if (event.request) {
-      delete event.request.cookies;
-
-      // Remove query parameters from URLs that might contain sensitive data
-      if (event.request.url) {
-        try {
-          const url = new URL(event.request.url);
-          // Keep only the pathname and origin, remove query params
-          event.request.url = url.origin + url.pathname;
-        } catch (error) {
-          // URL parsing failed - log in development, keep original URL in production
-          if (!import.meta.env.PROD) {
-            // eslint-disable-next-line no-console -- Development-only debugging
-            console.warn('Failed to parse request URL for sanitization:', error);
-          }
-        }
-      }
-    }
-
-    // Scrub sensitive data from breadcrumbs
-    if (event.breadcrumbs && event.breadcrumbs.length > 0) {
-      event.breadcrumbs = event.breadcrumbs.map((breadcrumb) => {
-        if (breadcrumb.data?.url) {
-          try {
-            const url = new URL(breadcrumb.data.url);
-            // Remove query parameters and hash from breadcrumb URLs
-            url.search = '';
-            url.hash = '';
-            breadcrumb.data.url = url.toString();
-          } catch (error) {
-            // URL parsing failed - log in development, keep original in production
-            if (!import.meta.env.PROD) {
-              // eslint-disable-next-line no-console -- Development-only debugging
-              console.warn('Failed to parse breadcrumb URL for sanitization:', error);
-            }
-          }
-        }
-        return breadcrumb;
-      });
-    }
-
-    // Remove user email if accidentally captured
-    if (event.user?.email) {
-      delete event.user.email;
-    }
-
-    return event;
-  },
+  // Scrub sensitive data before sending to Sentry (unified client logic)
+  beforeSend: createSentryBeforeSend(true),
 
   // Integrations for enhanced monitoring
   integrations: [

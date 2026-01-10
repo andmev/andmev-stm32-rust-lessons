@@ -3,40 +3,48 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getAvailableLanguages } from '@/utils/languages';
 import { withBase } from '@/utils/url';
 import { validateLanguage } from '@/utils/validators';
-import { getLessonsByLanguage, getLessonNavigation } from '@/utils/lesson-repository';
+import { getLessons } from '@/utils/collections';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
   const languages = await getAvailableLanguages();
+  const allLessons = await getLessons();
 
-  return Promise.all(
-    languages.map(async (lang) => {
-      const langLessons = await getLessonsByLanguage(lang);
+  return languages.flatMap((lang) => {
+    // Filter and sort lessons for this language (in memory, single operation)
+    const langLessons = allLessons
+      .filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`))
+      .sort((a, b) => a.data.order - b.data.order);
 
-      // Map lessons to include slugs and navigation
-      const lessonsWithSlugs = langLessons.map((lesson) => {
-        const defaultSlug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
-        const slug = lesson.data.url || defaultSlug;
-        return { ...lesson, slug };
-      });
+    // Map lessons to include slugs
+    const lessonsWithSlugs = langLessons.map((lesson) => {
+      const defaultSlug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
+      const slug = lesson.data.url || defaultSlug;
+      return { ...lesson, slug };
+    });
 
-      // Generate paths for each lesson with navigation
-      return Promise.all(
-        lessonsWithSlugs.map(async (lesson) => {
-          const { prev, next } = await getLessonNavigation(lang, lesson.slug);
-
-          return {
-            params: { lang, slug: lesson.slug },
-            props: {
-              lesson,
-              prevLesson: prev,
-              nextLesson: next,
-            },
-          };
-        })
-      );
-    })
-  ).then((results) => results.flat());
+    // Generate paths with prev/next navigation calculated from array indices
+    return lessonsWithSlugs.map((lesson, index) => ({
+      params: { lang, slug: lesson.slug },
+      props: {
+        lesson,
+        prevLesson:
+          index > 0
+            ? {
+                title: lessonsWithSlugs[index - 1].data.title,
+                slug: lessonsWithSlugs[index - 1].slug,
+              }
+            : null,
+        nextLesson:
+          index < lessonsWithSlugs.length - 1
+            ? {
+                title: lessonsWithSlugs[index + 1].data.title,
+                slug: lessonsWithSlugs[index + 1].slug,
+              }
+            : null,
+      },
+    }));
+  });
 }
 
 const { lang } = Astro.params;
@@ -61,6 +69,23 @@ const { Content } = await render(lesson);
   twitterCard={lesson.data.twitterCard}
   canonicalUrl={lesson.data.canonicalUrl}
 >
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'LearningResource',
+      name: lesson.data.title,
+      description: lesson.data.description,
+      inLanguage: lang,
+      learningResourceType: 'Tutorial',
+      educationalLevel: 'Intermediate',
+      audience: {
+        '@type': 'EducationalAudience',
+        educationalRole: 'student',
+      },
+    })}
+  />
+
   <article class="mx-auto w-full max-w-[78rem] px-4 pt-16 pb-20 sm:px-6 md:pt-24 md:pb-28">
     <header class="mx-auto w-full max-w-[54rem] text-center">
       <h1

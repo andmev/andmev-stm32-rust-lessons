@@ -1,4 +1,4 @@
-import type { Language } from '@/constants';
+import type { Language } from '@/config';
 
 /**
  * Options for building URLs with language and path

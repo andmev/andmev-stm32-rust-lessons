@@ -1,6 +1,9 @@
 import { getLessons } from '@/utils/collections';
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from '@/constants';
+import { config } from '@/config';
 import { validateLanguage } from '@/utils/validators';
+
+const DEFAULT_LANGUAGE = config.languages.default;
+const SUPPORTED_LANGUAGES = config.languages.supported;
 
 /**
  * Cache for available languages to avoid repeated collection scans

@@ -1,4 +1,6 @@
-import { SUPPORTED_LANGUAGES, type Language } from '@/constants';
+import { config, type Language } from '@/config';
+
+const SUPPORTED_LANGUAGES = config.languages.supported;
 
 /**
  * Type guard to validate if a string is a supported language code

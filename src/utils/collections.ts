@@ -9,7 +9,7 @@ let pagesCache: CollectionEntry<'pages'>[] | null = null;
  */
 export async function getLessons(): Promise<CollectionEntry<'lessons'>[]> {
   lessonsCache ??= await getCollection('lessons');
-  return lessonsCache;
+  return lessonsCache!;
 }
 
 /**
@@ -18,5 +18,5 @@ export async function getLessons(): Promise<CollectionEntry<'lessons'>[]> {
  */
 export async function getPages(): Promise<CollectionEntry<'pages'>[]> {
   pagesCache ??= await getCollection('pages');
-  return pagesCache;
+  return pagesCache!;
 }

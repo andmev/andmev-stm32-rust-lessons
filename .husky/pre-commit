@@ -8,7 +8,7 @@ echo "✨ Checking code formatting..."
 npm run format:check || exit 1
 
 echo "🔎 Running TypeScript type check..."
-npx tsc --noEmit || exit 1
+npx tsc --noEmit --incremental false || exit 1
 
 echo "🧪 Running tests..."
 npm run test:run || exit 1

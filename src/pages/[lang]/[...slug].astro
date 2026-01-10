@@ -3,41 +3,49 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getAvailableLanguages } from '@/utils/languages';
 import { withBase } from '@/utils/url';
 import { validateLanguage } from '@/utils/validators';
-import { getLessons } from '@/utils/collections';
+import { getLessonsByLanguage, getLessonNavigation } from '@/utils/lesson-repository';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const lessons = await getLessons();
   const languages = await getAvailableLanguages();
 
-  return languages.flatMap((lang) => {
-    // Lessons are now at content/en/lessons/*.mdx
-    const langLessons = lessons
-      .filter((lesson) => lesson.id.startsWith(`${lang}/lessons/`))
-      .map((lesson) => {
+  return Promise.all(
+    languages.map(async (lang) => {
+      const langLessons = await getLessonsByLanguage(lang);
+
+      // Map lessons to include slugs and navigation
+      const lessonsWithSlugs = langLessons.map((lesson) => {
         const defaultSlug = lesson.id.replace(`${lang}/lessons/`, '').replace('.mdx', '');
         const slug = lesson.data.url || defaultSlug;
         return { ...lesson, slug };
-      })
-      .sort((a, b) => a.data.order - b.data.order);
+      });
 
-    return langLessons.map((lesson, index) => {
-      const prev = langLessons[index - 1];
-      const next = langLessons[index + 1];
+      // Generate paths for each lesson with navigation
+      return Promise.all(
+        lessonsWithSlugs.map(async (lesson) => {
+          const { prev, next } = await getLessonNavigation(lang, lesson.slug);
 
-      return {
-        params: { lang, slug: lesson.slug },
-        props: {
-          lesson,
-          prevLesson: prev ? { title: prev.data.title, slug: prev.slug } : null,
-          nextLesson: next ? { title: next.data.title, slug: next.slug } : null,
-        },
-      };
-    });
-  });
+          return {
+            params: { lang, slug: lesson.slug },
+            props: {
+              lesson,
+              prevLesson: prev,
+              nextLesson: next,
+            },
+          };
+        })
+      );
+    })
+  ).then((results) => results.flat());
 }
 
 const { lang } = Astro.params;
+
+// Validate language parameter for type safety
+if (!lang || !validateLanguage(lang)) {
+  return Astro.redirect('/404');
+}
+
 const { lesson, prevLesson, nextLesson } = Astro.props;
 const { Content } = await render(lesson);
 ---

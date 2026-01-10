@@ -6,6 +6,7 @@ import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import sentry from '@sentry/astro';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
@@ -28,23 +29,10 @@ export default defineConfig({
   base: isGitHubPages ? '/andmev-stm32-rust-lessons' : '/',
   prefetch: true,
 
-  // CSP disabled - was causing issues with dynamic parallax styles
-  // experimental: {
-  //   csp: {
-  //     algorithm: 'SHA-256',
-  //     styleDirective: {
-  //       resources: ["'self'", "'unsafe-hashes'", 'https://fonts.googleapis.com'],
-  //     },
-  //     scriptDirective: {
-  //       resources: ["'self'"],
-  //     },
-  //     directives: [
-  //       "font-src 'self' https://fonts.gstatic.com",
-  //       "img-src 'self' data:",
-  //       "default-src 'self'",
-  //     ],
-  //   },
-  // },
+  // CSP is implemented via public/_headers for GitHub Pages deployment
+  // Astro middleware-based CSP only runs during build time, not at request time for static sites
+  // The _headers file ensures CSP is properly enforced by GitHub Pages at runtime
+  // See: public/_headers for the full CSP configuration
   vite: {
     plugins: [
       // @ts-expect-error - Vite plugin type mismatch between Astro's bundled Vite and external plugins
@@ -109,6 +97,11 @@ export default defineConfig({
           de: 'de',
         },
       },
+    }),
+    sentry({
+      project: 'rust-lessons',
+      org: 'medvediev',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
     }),
   ],
 });

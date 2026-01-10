@@ -7,7 +7,9 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const response = await next();
 
-  // Add security headers
+  // NOTE: These security headers only apply during local development (astro dev/preview)
+  // For production on GitHub Pages, security headers are configured in public/_headers
+  // Astro middleware runs during SSG build, not at request time for static sites
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');

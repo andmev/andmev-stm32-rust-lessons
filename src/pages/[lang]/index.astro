@@ -1,6 +1,8 @@
 ---
 import HomeTemplate from '@/components/HomeTemplate.astro';
 import { getAvailableLanguages } from '@/utils/languages';
+import { validateLanguage } from '@/utils/validators';
+import { t, type SupportedLanguage } from '@/i18n/translations';
 
 export async function getStaticPaths() {
   const languages = await getAvailableLanguages();
@@ -9,14 +11,13 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 
-const lessonLabelByLang: Record<string, string> = {
-  en: 'Lesson',
-  es: 'Lección',
-  uk: 'Урок',
-  fr: 'Leçon',
-  de: 'Lektion',
-};
-const lessonLabel = lessonLabelByLang[lang] ?? 'Lesson';
+// Validate language parameter for type safety
+if (!lang || !validateLanguage(lang)) {
+  return Astro.redirect('/404');
+}
+
+// Get lesson label from centralized translations
+const lessonLabel = t(lang as SupportedLanguage, 'lesson');
 ---
 
 <HomeTemplate lang={lang} lessonLabel={lessonLabel} />

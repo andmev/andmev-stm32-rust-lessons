@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getAvailableLanguages } from '@/utils/languages';
+import { validateLanguage } from '@/utils/validators';
 import { getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -9,6 +10,11 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
+
+// Validate language parameter for type safety
+if (!lang || !validateLanguage(lang)) {
+  return Astro.redirect('/404');
+}
 
 // Load about page content from MDX
 const aboutContent = await getEntry('pages', `${lang}/about`);

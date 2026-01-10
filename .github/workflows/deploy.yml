@@ -41,8 +41,11 @@ jobs:
   build:
     needs: quality
     runs-on: ubuntu-latest
+    environment: github-pages
     env:
       GITHUB_PAGES: 'true'
+      PUBLIC_SENTRY_DSN: ${{ secrets.PUBLIC_SENTRY_DSN }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v6

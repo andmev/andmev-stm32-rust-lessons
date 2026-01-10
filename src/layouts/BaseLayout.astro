@@ -47,6 +47,9 @@ const site = Astro.site ? Astro.site.href : Astro.url.origin;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Prevent indexing of non-production deployments -->
+    {!import.meta.env.PROD && <meta name="robots" content="noindex, nofollow" />}
+
     <FontLoader />
 
     <SEOHead

@@ -12,9 +12,17 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 import remarkGithubBlockquoteAlert from 'remark-github-blockquote-alert';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { config } from './src/config/index.ts';
 
 // Validate environment configuration
 const isGitHubPages = process.env.GITHUB_PAGES === 'true';
+
+// Generate sitemap locales dynamically from config
+// This ensures single source of truth for supported languages
+const sitemapLocales = config.languages.supported.reduce((acc, lang) => {
+  acc[lang] = lang;
+  return acc;
+}, /** @type {Record<string, string>} */ ({}));
 
 // Log configuration for visibility during builds
 if (process.env.NODE_ENV !== 'test') {
@@ -34,6 +42,11 @@ export default defineConfig({
   // The _headers file ensures CSP is properly enforced by GitHub Pages at runtime
   // See: public/_headers for the full CSP configuration
   vite: {
+    build: {
+      // Disable sourcemap generation to suppress warnings from plugins that don't generate sourcemaps
+      // (astro:transitions, @tailwindcss/vite). Sourcemaps aren't needed for production static site.
+      sourcemap: false,
+    },
     plugins: [
       // @ts-expect-error - Vite plugin type mismatch between Astro's bundled Vite and external plugins
       tailwindcss(),
@@ -88,14 +101,8 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
       i18n: {
-        defaultLocale: 'en',
-        locales: {
-          en: 'en',
-          es: 'es',
-          uk: 'uk',
-          fr: 'fr',
-          de: 'de',
-        },
+        defaultLocale: config.languages.default,
+        locales: sitemapLocales,
       },
     }),
     sentry({

@@ -4,17 +4,15 @@ import eslintPluginAstro from 'eslint-plugin-astro';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default [
-  // Ignore patterns
+  // Ignore patterns - be specific rather than using broad wildcards
   {
     ignores: [
       'dist/**',
       '.astro/**',
       'node_modules/**',
       'coverage/**',
-      '*.config.js',
-      '*.config.mjs',
-      '*.config.ts',
-      'sentry.*.config.js',
+      // Only ignore Astro config due to @ts-expect-error workaround
+      'astro.config.mjs',
     ],
   },
 
@@ -67,6 +65,14 @@ export default [
     rules: {
       'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    },
+  },
+
+  // Scripts directory - allow console statements
+  {
+    files: ['scripts/**/*.js'],
+    rules: {
+      'no-console': 'off',
     },
   },
 ];

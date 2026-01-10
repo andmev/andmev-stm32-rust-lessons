@@ -14,7 +14,6 @@
  * Should be run after `astro build` completes.
  */
 
-/* eslint-disable no-console */
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { createHash } from 'node:crypto';

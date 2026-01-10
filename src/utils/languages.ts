@@ -29,9 +29,12 @@ export async function getAvailableLanguages(): Promise<string[]> {
     if (lang) {
       // Validate against supported languages
       if (!validateLanguage(lang)) {
-        console.warn(
-          `[getAvailableLanguages] Unsupported language detected: ${lang}. Supported languages: ${SUPPORTED_LANGUAGES.join(', ')}`
-        );
+        // Only log validation warnings in development
+        if (!import.meta.env.PROD) {
+          console.warn(
+            `[getAvailableLanguages] Unsupported language detected: ${lang}. Supported languages: ${SUPPORTED_LANGUAGES.join(', ')}`
+          );
+        }
         return;
       }
       languages.add(lang);

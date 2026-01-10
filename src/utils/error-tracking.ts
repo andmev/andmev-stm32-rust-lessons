@@ -60,11 +60,9 @@ export function reportError(
     });
   }
 
-  // Log to console based on environment
-  if (import.meta.env.PROD) {
-    // In production, log sanitized error message (Sentry has the full details)
-    console.error(`[${severity.toUpperCase()}] ${context}: ${error.message}`);
-  } else {
+  // Log to console in development only
+  // In production, Sentry already has the full error details, so console logging is unnecessary
+  if (!import.meta.env.PROD) {
     // In development, log full error details with stack trace
     console.error(`[${severity.toUpperCase()}] [${context}]`, error, extras);
   }

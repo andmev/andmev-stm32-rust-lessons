@@ -17,7 +17,7 @@ Sentry.init({
   environment: import.meta.env.PROD ? 'production' : 'development',
 
   // Scrub sensitive data before sending to Sentry
-  beforeSend(event, hint) {
+  beforeSend(event, _hint) {
     // Remove cookies from request data
     if (event.request) {
       delete event.request.cookies;
@@ -31,6 +31,7 @@ Sentry.init({
         } catch (error) {
           // URL parsing failed - log in development, keep original URL in production
           if (!import.meta.env.PROD) {
+            // eslint-disable-next-line no-console -- Development-only debugging
             console.warn('Failed to parse request URL for sanitization:', error);
           }
         }
@@ -50,6 +51,7 @@ Sentry.init({
           } catch (error) {
             // URL parsing failed - log in development, keep original in production
             if (!import.meta.env.PROD) {
+              // eslint-disable-next-line no-console -- Development-only debugging
               console.warn('Failed to parse breadcrumb URL for sanitization:', error);
             }
           }

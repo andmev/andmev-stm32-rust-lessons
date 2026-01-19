@@ -35,7 +35,7 @@
     "tailwindcss": "4.1.18"
   },
   "devDependencies": {
-    "@sentry/astro": "10.32.1",
+    "@sentry/astro": "10.34.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/preact": "3.2.4",
     "@typescript-eslint/eslint-plugin": "8.52.0",
